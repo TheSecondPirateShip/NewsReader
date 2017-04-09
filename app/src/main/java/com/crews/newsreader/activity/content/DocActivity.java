@@ -1,6 +1,9 @@
 package com.crews.newsreader.activity.content;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -10,9 +13,11 @@ import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
+import android.view.WindowManager;
 import android.widget.TextView;
 
 import com.crews.newsreader.R;
+import com.crews.newsreader.adapters.MimageLoader;
 import com.crews.newsreader.beans.Content.Body;
 import com.crews.newsreader.beans.Content.Content;
 import com.crews.newsreader.beans.Main.New;
@@ -31,6 +36,7 @@ public class DocActivity extends AppCompatActivity {
     private String text = null;
     private String title = null;
     private TextView header, content;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,6 +87,7 @@ public class DocActivity extends AppCompatActivity {
     }
 
     private void getHTML(final Call call) {
+        final float width = this.getWindowManager().getDefaultDisplay().getWidth();
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -90,12 +97,18 @@ public class DocActivity extends AppCompatActivity {
                 Spanned sp = Html.fromHtml(text, new Html.ImageGetter() {
                     @Override
                     public Drawable getDrawable(String source) {
-                        InputStream is = null;
+                        InputStream is;
                         try {
                             is = (InputStream) new URL(source).getContent();
                             Drawable d = Drawable.createFromStream(is, "src");
-                            d.setBounds(0, 0, d.getIntrinsicWidth(),
-                                    d.getIntrinsicHeight());
+                            //计算宽和高来自适应屏幕
+                            Bitmap bitmap = MimageLoader.build(DocActivity.this).loadBitmapFromHttp(source,0,0);
+                            int h = bitmap.getHeight();
+                            int w = bitmap.getWidth();
+                            float hight = h*width/(float)w;
+                            Log.d("zzzia","w:"+String.valueOf(w)+"\nh:"+String.valueOf(h));
+                            d.setBounds(0, 0, (int)width,
+                                    (int)hight);
                             is.close();
                             return d;
                         } catch (Exception e) {

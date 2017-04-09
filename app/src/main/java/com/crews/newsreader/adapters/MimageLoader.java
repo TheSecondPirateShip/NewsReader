@@ -153,7 +153,7 @@ public class MimageLoader {
      * @param reqHeight
      * @return
      */
-    private Bitmap loadBitmapFromHttp(String url, int reqWidth, int reqHeight) {
+    public Bitmap loadBitmapFromHttp(String url, int reqWidth, int reqHeight) {
         //Log.d(TAG, "fromHttp");
         Log.d(TAG, "loadBitmap: 从internet得到了Bitmap");
         if (Looper.myLooper() == Looper.getMainLooper()) { //如果当前在主线程上
