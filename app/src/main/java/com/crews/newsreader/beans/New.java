@@ -1,12 +1,13 @@
 package com.crews.newsreader.beans;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * Created by zia on 2017/4/8.
  */
 
-public class New {
+public class New implements Serializable{
     String thumbnail;
     String title;
     String online;
@@ -144,7 +145,7 @@ public class New {
     }
 }
 
-class Style{
+class Style implements Serializable{
     String type;
     int slideCount;
     List<String> images;
@@ -174,7 +175,7 @@ class Style{
     }
 }
 
-class Link{
+class Link implements Serializable{
     String type;
     String url;
 
@@ -195,7 +196,7 @@ class Link{
     }
 }
 
-class Phvideo{
+class Phvideo implements Serializable{
     String channelName;
     String length;
 
