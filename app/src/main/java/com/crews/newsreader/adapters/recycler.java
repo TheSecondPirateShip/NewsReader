@@ -9,7 +9,7 @@ import android.widget.TextView;
 
 
 import com.crews.newsreader.R;
-import com.crews.newsreader.beans.New;
+import com.crews.newsreader.beans.Main.New;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,7 +41,7 @@ public class recycler extends RecyclerView.Adapter<recycler.mViewHolder> {
         if(mContext == null){
             mContext = parent.getContext();
         }
-        View view = LayoutInflater.from(mContext).inflate(R.layout.item,parent,false);
+        View view = LayoutInflater.from(mContext).inflate(R.layout.item_main,parent,false);
         return new mViewHolder(view);
     }
 
@@ -54,7 +54,8 @@ public class recycler extends RecyclerView.Adapter<recycler.mViewHolder> {
                 callBack.onClick(item);
             }
         });
-        holder.title.setText(item.getTitle());
+        String s = item.getType()+": "+item.getTitle();
+        holder.title.setText(s);
     }
 
     @Override

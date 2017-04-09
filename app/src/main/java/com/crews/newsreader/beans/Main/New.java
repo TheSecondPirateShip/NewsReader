@@ -1,4 +1,4 @@
-package com.crews.newsreader.beans;
+package com.crews.newsreader.beans.Main;
 
 import java.io.Serializable;
 import java.util.List;
@@ -145,74 +145,8 @@ public class New implements Serializable{
     }
 }
 
-class Style implements Serializable{
-    String type;
-    int slideCount;
-    List<String> images;
 
-    public List<String> getImages() {
-        return images;
-    }
 
-    public void setImages(List<String> images) {
-        this.images = images;
-    }
 
-    public int getSlideCount() {
-        return slideCount;
-    }
 
-    public void setSlideCount(int slideCount) {
-        this.slideCount = slideCount;
-    }
 
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-}
-
-class Link implements Serializable{
-    String type;
-    String url;
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
-    }
-}
-
-class Phvideo implements Serializable{
-    String channelName;
-    String length;
-
-    public String getChannelName() {
-        return channelName;
-    }
-
-    public void setChannelName(String channelName) {
-        this.channelName = channelName;
-    }
-
-    public String getLength() {
-        return length;
-    }
-
-    public void setLength(String length) {
-        this.length = length;
-    }
-}

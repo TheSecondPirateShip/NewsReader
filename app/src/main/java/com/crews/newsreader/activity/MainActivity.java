@@ -7,9 +7,12 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import com.crews.newsreader.R;
+import com.crews.newsreader.activity.content.DocActivity;
+import com.crews.newsreader.activity.content.PhvideoActivity;
+import com.crews.newsreader.activity.content.SlideActivity;
 import com.crews.newsreader.adapters.recycler;
-import com.crews.newsreader.beans.Data;
-import com.crews.newsreader.beans.New;
+import com.crews.newsreader.beans.Main.Data;
+import com.crews.newsreader.beans.Main.New;
 import com.crews.newsreader.utils.HttpUtil;
 import com.google.gson.Gson;
 
@@ -44,11 +47,16 @@ public class MainActivity extends AppCompatActivity {
         adapter = new recycler(new recycler.CallBack() {
             @Override
             public void onClick(New item) {
-                if(item != null) {
-                    Intent intent = new Intent(MainActivity.this, ContentActivity.class);
-                    //传递这个新闻的类
-                    intent.putExtra("new", item);
-                    startActivity(intent);
+                if(item.getType().equals("doc"))
+                {
+                    toActivity(DocActivity.class,item);
+                }
+                else if(item.getType().equals("slide"))
+                {
+                    toActivity(SlideActivity.class,item);
+                }
+                else if(item.getType().equals("phvideo")){
+                    toActivity(PhvideoActivity.class,item);
                 }
             }
         });
@@ -96,5 +104,12 @@ public class MainActivity extends AppCompatActivity {
             Log.d(TAG,n.getTitle());
         }
 
+    }
+
+    private void toActivity(Class c,New item){
+        Intent intent = new Intent(MainActivity.this, c);
+        //传递这个新闻的类
+        intent.putExtra("new", item);
+        startActivity(intent);
     }
 }

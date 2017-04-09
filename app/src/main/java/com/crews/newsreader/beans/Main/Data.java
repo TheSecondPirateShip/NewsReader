@@ -1,4 +1,4 @@
-package com.crews.newsreader.beans;
+package com.crews.newsreader.beans.Main;
 
 import java.util.List;
 
