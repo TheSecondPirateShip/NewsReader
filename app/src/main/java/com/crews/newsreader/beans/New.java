@@ -1,5 +1,7 @@
 package com.crews.newsreader.beans;
 
+import java.util.List;
+
 /**
  * Created by zia on 2017/4/8.
  */
@@ -7,6 +9,7 @@ package com.crews.newsreader.beans;
 public class New {
     String thumbnail;
     String title;
+    String online;
     String source;
     String simId;
     String updateTime;
@@ -15,8 +18,34 @@ public class New {
     String commentsUrl;
     String comments;
     String commentsall;
+    boolean hasSlide;
     Style style;
     Link link;
+    Phvideo phvideo;
+
+    public boolean isHasSlide() {
+        return hasSlide;
+    }
+
+    public void setHasSlide(boolean hasSlide) {
+        this.hasSlide = hasSlide;
+    }
+
+    public String getOnline() {
+        return online;
+    }
+
+    public void setOnline(String online) {
+        this.online = online;
+    }
+
+    public Phvideo getPhvideo() {
+        return phvideo;
+    }
+
+    public void setPhvideo(Phvideo phvideo) {
+        this.phvideo = phvideo;
+    }
 
     public Link getLink() {
         return link;
@@ -117,6 +146,24 @@ public class New {
 
 class Style{
     String type;
+    int slideCount;
+    List<String> images;
+
+    public List<String> getImages() {
+        return images;
+    }
+
+    public void setImages(List<String> images) {
+        this.images = images;
+    }
+
+    public int getSlideCount() {
+        return slideCount;
+    }
+
+    public void setSlideCount(int slideCount) {
+        this.slideCount = slideCount;
+    }
 
     public String getType() {
         return type;
@@ -145,5 +192,26 @@ class Link{
 
     public void setUrl(String url) {
         this.url = url;
+    }
+}
+
+class Phvideo{
+    String channelName;
+    String length;
+
+    public String getChannelName() {
+        return channelName;
+    }
+
+    public void setChannelName(String channelName) {
+        this.channelName = channelName;
+    }
+
+    public String getLength() {
+        return length;
+    }
+
+    public void setLength(String length) {
+        this.length = length;
     }
 }
