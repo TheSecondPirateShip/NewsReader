@@ -7,7 +7,7 @@ import java.util.List;
  * Created by zia on 2017/4/8.
  */
 
-public class New implements Serializable{
+public class Item implements Serializable{
     String thumbnail;
     String title;
     String online;

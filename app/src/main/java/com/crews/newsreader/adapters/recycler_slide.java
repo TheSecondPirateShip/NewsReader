@@ -24,13 +24,17 @@ public class recycler_slide extends RecyclerView.Adapter<recycler_slide.mViewHol
         void onClick(Slides slides);
     }
 
+    public static final int TYPE_HEADER = 0;
+    public static final int TYPE_NORMAL = 1;
     private float mwidth;
+    private String header;
     private CallBack callBack = null;
     private List<Slides> list = new ArrayList<>();
     private Context mContext = null;
 
-    public recycler_slide(CallBack callBack){
+    public recycler_slide(CallBack callBack,String header){
         this.callBack = callBack;
+        this.header = header;
     }
 
     public void refresh(List<Slides> list){
@@ -43,41 +47,70 @@ public class recycler_slide extends RecyclerView.Adapter<recycler_slide.mViewHol
         if(mContext == null){
             mContext = parent.getContext();
         }
-        View view = LayoutInflater.from(mContext).inflate(R.layout.item_slide,parent,false);
-        return new mViewHolder(view);
+        recycler_slide.mViewHolder holder;
+        if(viewType == TYPE_HEADER)
+        {
+            View view = LayoutInflater.from(mContext).inflate(R.layout.slide_header,parent,false);
+            holder = new mViewHolder(view,TYPE_HEADER);
+        }
+        else
+        {
+            View view = LayoutInflater.from(mContext).inflate(R.layout.item_slide,parent,false);
+            holder = new mViewHolder(view,TYPE_NORMAL);
+        }
+        return holder;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        if(position == 0){
+            return TYPE_HEADER;
+        }
+        return TYPE_NORMAL;
     }
 
     @Override
     public void onBindViewHolder(mViewHolder holder, int position) {
-        mwidth = ((Activity) mContext).getWindowManager().getDefaultDisplay().getWidth();
-        ViewGroup.LayoutParams lp = holder.img.getLayoutParams();
-        lp.width = (int)mwidth;
-        lp.height = RecyclerView.LayoutParams.WRAP_CONTENT;
-        holder.img.setLayoutParams(lp);
-        final Slides slides = list.get(position);
-        holder.img.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                callBack.onClick(slides);
-            }
-        });
-
-        holder.description.setText(slides.getDescription());
-        MimageLoader.build(mContext).setBitmap(slides.getImage(),holder.img);
+        if(holder.viewType == TYPE_NORMAL && position != 0){
+            final Slides slides = list.get(position-1);
+            mwidth = ((Activity) mContext).getWindowManager().getDefaultDisplay().getWidth();
+            ViewGroup.LayoutParams lp = holder.img.getLayoutParams();
+            lp.width = (int)mwidth;
+            lp.height = RecyclerView.LayoutParams.WRAP_CONTENT;
+            holder.img.setLayoutParams(lp);
+            holder.img.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    callBack.onClick(slides);
+                }
+            });
+            holder.description.setText(slides.getDescription());
+            MimageLoader.build(mContext).setBitmap(slides.getImage(),holder.img);
+        }
+        if(holder.viewType == TYPE_HEADER && position == 0){
+            holder.header.setText(header);
+        }
     }
 
     @Override
     public int getItemCount() {
-        return list.size();
+        return list.size() + 1;
     }
 
     class mViewHolder extends RecyclerView.ViewHolder {
-        TextView description;
+        TextView description,header;
         ImageView img;
-        public mViewHolder(View itemView) {
+        int viewType;
+        public mViewHolder(View itemView,int viewType) {
             super(itemView);
-            description = (TextView)itemView.findViewById(R.id.slide_description);
-            img = (ImageView)itemView.findViewById(R.id.slide_img);
+            this.viewType = viewType;
+            if(viewType == TYPE_HEADER){
+                header = (TextView)itemView.findViewById(R.id.slide_header);
+            }
+            if(viewType == TYPE_NORMAL) {
+                description = (TextView) itemView.findViewById(R.id.slide_description);
+                img = (ImageView) itemView.findViewById(R.id.slide_img);
+            }
         }
     }
 }

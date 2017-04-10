@@ -22,7 +22,7 @@
             android:layout_weight="1"
             android:layout_height="match_parent"
             android:scaleType="fitXY"
-            android:src="@drawable/贼船头条" />
+            android:src="@drawable/zctt" />
 
         <EditText
             android:layout_width="0dp"

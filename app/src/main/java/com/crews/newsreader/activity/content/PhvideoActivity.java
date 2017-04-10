@@ -6,11 +6,11 @@ import android.os.Bundle;
 import android.widget.Toast;
 
 import com.crews.newsreader.R;
-import com.crews.newsreader.beans.Main.New;
+import com.crews.newsreader.beans.Main.Item;
 
 public class PhvideoActivity extends AppCompatActivity {
 
-    New mNew = null;
+    Item mItem = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,7 +21,7 @@ public class PhvideoActivity extends AppCompatActivity {
 
     private void init(){
         Intent intent = getIntent();
-        mNew = (New)intent.getSerializableExtra("new");
-        Toast.makeText(this, "phvideo"+mNew.getTitle(), Toast.LENGTH_SHORT).show();
+        mItem = (Item)intent.getSerializableExtra("new");
+        Toast.makeText(this, "phvideo"+ mItem.getTitle(), Toast.LENGTH_SHORT).show();
     }
 }

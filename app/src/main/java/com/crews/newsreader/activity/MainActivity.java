@@ -12,7 +12,7 @@ import com.crews.newsreader.activity.content.PhvideoActivity;
 import com.crews.newsreader.activity.content.SlideActivity;
 import com.crews.newsreader.adapters.recycler;
 import com.crews.newsreader.beans.Main.Data;
-import com.crews.newsreader.beans.Main.New;
+import com.crews.newsreader.beans.Main.Item;
 import com.crews.newsreader.utils.HttpUtil;
 import com.google.gson.Gson;
 
@@ -22,7 +22,7 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
     private final String TAG = "MainTest";
     private RecyclerView recyclerView;
-    private List<New> newList;
+    private List<Item> itemList;
     private recycler adapter;
 
     @Override
@@ -36,17 +36,14 @@ public class MainActivity extends AppCompatActivity {
 
     private void bind(){
         recyclerView = (RecyclerView)findViewById(R.id.recyclerView);
-        newList = new ArrayList<>();
+        itemList = new ArrayList<>();
     }
 
-    /**
-     * 设置recyclerView
-     */
     private void setRecyclerView(){
         recyclerView.setLayoutManager(new GridLayoutManager(this, 1));
         adapter = new recycler(new recycler.CallBack() {
             @Override
-            public void onClick(New item) {
+            public void onClick(Item item) {
                 if(item.getType().equals("doc"))
                 {
                     toActivity(DocActivity.class,item);
@@ -58,6 +55,9 @@ public class MainActivity extends AppCompatActivity {
                 else if(item.getType().equals("phvideo")){
                     toActivity(PhvideoActivity.class,item);
                 }
+                /**
+                 * 还有一个web类型的，这个是广告，需要在recycler中去掉
+                 */
             }
         });
         recyclerView.setAdapter(adapter);
@@ -73,13 +73,13 @@ public class MainActivity extends AppCompatActivity {
             public void onFinish(String response) {
                 Data data = gsonData(response);
                 //加载到集合
-                newList.addAll(data.getItem());
+                itemList.addAll(data.getItem());
                 showLog();
                 //刷新recycler
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        adapter.refresh(newList);
+                        adapter.refresh(itemList);
                     }
                 });
             }
@@ -100,13 +100,13 @@ public class MainActivity extends AppCompatActivity {
      * log测试
      */
     private void showLog(){
-        for (New n : newList) {
+        for (Item n : itemList) {
             Log.d(TAG,n.getTitle());
         }
 
     }
 
-    private void toActivity(Class c,New item){
+    private void toActivity(Class c,Item item){
         Intent intent = new Intent(MainActivity.this, c);
         //传递这个新闻的类
         intent.putExtra("new", item);

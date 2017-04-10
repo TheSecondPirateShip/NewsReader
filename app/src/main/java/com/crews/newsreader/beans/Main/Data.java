@@ -10,7 +10,7 @@ public class Data {
     String listId;
     String type;
     String count;
-    List<New> item;
+    List<Item> item;
 
     public String getCount() {
         return count;
@@ -20,11 +20,11 @@ public class Data {
         this.count = count;
     }
 
-    public List<New> getItem() {
+    public List<Item> getItem() {
         return item;
     }
 
-    public void setItem(List<New> item) {
+    public void setItem(List<Item> item) {
         this.item = item;
     }
 

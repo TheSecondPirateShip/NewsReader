@@ -2,38 +2,29 @@ package com.crews.newsreader.activity.content;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Html;
 import android.text.Spanned;
-import android.text.method.LinkMovementMethod;
 import android.util.Log;
-import android.view.GestureDetector;
-import android.view.MotionEvent;
-import android.view.WindowManager;
 import android.widget.TextView;
 
 import com.crews.newsreader.R;
 import com.crews.newsreader.adapters.MimageLoader;
 import com.crews.newsreader.beans.Content.Body;
 import com.crews.newsreader.beans.Content.Content;
-import com.crews.newsreader.beans.Main.New;
+import com.crews.newsreader.beans.Main.Item;
 import com.crews.newsreader.utils.HttpUtil;
 import com.crews.newsreader.utils.ImgAdapter;
 import com.google.gson.Gson;
-
-import java.io.InputStream;
-import java.net.URL;
 
 public class DocActivity extends AppCompatActivity {
     private interface Call{
         void onFinish(Spanned spanned);
     }
-    private New mNew = null;
+    private Item mItem = null;
     private Body body = null;
     private String text = null;
     private String title = null;
@@ -51,8 +42,8 @@ public class DocActivity extends AppCompatActivity {
 
     private void init() {
         Intent intent = getIntent();
-        mNew = (New) intent.getSerializableExtra("new");
-        text = mNew.getLink().getUrl();
+        mItem = (Item) intent.getSerializableExtra("new");
+        text = mItem.getLink().getUrl();
     }
 
     private void bind() {

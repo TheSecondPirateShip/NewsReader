@@ -9,7 +9,7 @@ import android.widget.TextView;
 
 
 import com.crews.newsreader.R;
-import com.crews.newsreader.beans.Main.New;
+import com.crews.newsreader.beans.Main.Item;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,18 +20,18 @@ import java.util.List;
 
 public class recycler extends RecyclerView.Adapter<recycler.mViewHolder> {
     public interface CallBack{
-        void onClick(New item);
+        void onClick(Item item);
     }
 
     private CallBack callBack = null;
-    private List<New> list = new ArrayList<>();
+    private List<Item> list = new ArrayList<>();
     private Context mContext = null;
 
     public recycler(CallBack callBack){
         this.callBack = callBack;
     }
 
-    public void refresh(List<New> list){
+    public void refresh(List<Item> list){
         this.list = list;
         notifyDataSetChanged();
     }
@@ -47,7 +47,7 @@ public class recycler extends RecyclerView.Adapter<recycler.mViewHolder> {
 
     @Override
     public void onBindViewHolder(mViewHolder holder, int position) {
-        final New item = list.get(position);
+        final Item item = list.get(position);
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
