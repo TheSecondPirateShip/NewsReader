@@ -5,10 +5,12 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 
 import com.crews.newsreader.R;
+import com.crews.newsreader.activity.MainActivity;
 import com.crews.newsreader.beans.Main.Item;
 
 import java.util.ArrayList;
@@ -56,6 +58,8 @@ public class recycler extends RecyclerView.Adapter<recycler.mViewHolder> {
         });
         String s = item.getType()+": "+item.getTitle();
         holder.title.setText(s);
+        MimageLoader.build(mContext).setBitmap(item.getCommentsUrl(),holder.img);
+        holder.source.setText(item.getSource() + " " + item.getUpdateTime());
     }
 
     @Override
@@ -65,9 +69,13 @@ public class recycler extends RecyclerView.Adapter<recycler.mViewHolder> {
 
     class mViewHolder extends RecyclerView.ViewHolder {
         TextView title;
+        TextView source;
+        ImageView img;
         public mViewHolder(View itemView) {
             super(itemView);
-            title = (TextView)itemView.findViewById(R.id.item_title);
+            title = (TextView)itemView.findViewById(R.id.item_title_doc);
+            img = (ImageView)itemView.findViewById(R.id.item_img_doc);
+            source = (TextView) itemView.findViewById(R.id.item_source_doc);
         }
     }
 }

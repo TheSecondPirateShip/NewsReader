@@ -100,6 +100,7 @@ public class recycler_slide extends RecyclerView.Adapter<recycler_slide.mViewHol
     class mViewHolder extends RecyclerView.ViewHolder {
         TextView description,header;
         ImageView img;
+
         int viewType;
         public mViewHolder(View itemView,int viewType) {
             super(itemView);
@@ -110,6 +111,7 @@ public class recycler_slide extends RecyclerView.Adapter<recycler_slide.mViewHol
             if(viewType == TYPE_NORMAL) {
                 description = (TextView) itemView.findViewById(R.id.slide_description);
                 img = (ImageView) itemView.findViewById(R.id.slide_img);
+
             }
         }
     }
