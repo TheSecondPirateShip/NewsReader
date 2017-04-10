@@ -14,7 +14,7 @@
         android:orientation="horizontal">
 
         <ImageView
-
+            android:src="@drawable/img"
             android:id="@+id/item_img_doc"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -78,7 +78,7 @@
                     android:layout_height="match_parent"
                     android:gravity="left"
                     android:scaleType="fitStart"
-                    android:src="@drawable/comment_item_doc"/>
+                    />
                 <ImageView
                     android:id="@+id/item_del_doc"
                     android:layout_width="0dp"
@@ -86,7 +86,7 @@
                     android:layout_height="match_parent"
                     android:gravity="left"
                     android:scaleType="fitStart"
-                    android:src="@drawable/del_item_doc"/>
+                    />
             </LinearLayout>
         </LinearLayout>
 

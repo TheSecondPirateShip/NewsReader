@@ -1,12 +1,14 @@
 package com.crews.newsreader.activity;
 
+import android.content.ContentValues;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.widget.ImageView;
+import android.widget.EditText;
 
 import com.crews.newsreader.R;
 import com.crews.newsreader.activity.content.DocActivity;
@@ -16,6 +18,8 @@ import com.crews.newsreader.adapters.recycler;
 import com.crews.newsreader.beans.Main.Data;
 import com.crews.newsreader.beans.Main.Item;
 import com.crews.newsreader.utils.HttpUtil;
+import com.crews.newsreader.utils.MyDataBaseHelper;
+import com.crews.newsreader.utils.SQUtils;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
@@ -24,23 +28,36 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
     private final String TAG = "MainTest";
     private RecyclerView recyclerView;
+    private EditText editText;
     private List<Item> itemList;
     private recycler adapter;
+    private MyDataBaseHelper dbHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        ImageView view = (ImageView)findViewById(R.id.zctt) ;
-        view.setFocusable(true);//启动app时把焦点放在其他控件（不放在editext上）上防止弹出虚拟键盘
-        view.setFocusableInTouchMode(true);
-        view.requestFocus();
         bind();
         getFromHttp();
         setRecyclerView();
+        createSQ();
     }
 
+    private void createSQ(){
+        dbHelper = new MyDataBaseHelper(this,"Data.db",null,1);
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        SQUtils utils = new SQUtils();
+        //插入方法
+        Log.d("666","数据库开始");
+        utils.insert(db,values,itemList);
+        String obj = editText.getText().toString();
+        utils.query(db,values,obj);
+    }
+
+
     private void bind(){
+        editText = (EditText) findViewById(R.id.edit_query);
         recyclerView = (RecyclerView)findViewById(R.id.recyclerView);
         itemList = new ArrayList<>();
     }
@@ -73,7 +90,7 @@ public class MainActivity extends AppCompatActivity {
      * 从网络中加载
      */
     private void getFromHttp(){
-        String url = "http://api.irecommend.ifeng.com/irecommendList.php?userId=866048024885909&count=6&gv=5.2.6&av=5.2.6&uid=866048024885909&deviceid=866048024885909&proid=ifengnews&os=android_23&df=androidphone&vt=5&screen=720x1280&publishid=2024&nw=wifi&city=";
+        String url = "http://suo.im/1kHreH";
         HttpUtil.sendHttpRequest(url, new HttpUtil.CallBack() {
             @Override
             public void onFinish(String response) {
