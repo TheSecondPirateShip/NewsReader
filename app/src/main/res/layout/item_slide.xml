@@ -3,14 +3,14 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingBottom="40dp"
-    android:paddingStart="15dp"
-    android:paddingEnd="15dp">
+    >
     <ImageView
         android:id="@+id/slide_img"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:adjustViewBounds="true"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
         android:scaleType="fitXY"/>
     <TextView
         android:id="@+id/slide_description"
@@ -19,4 +19,47 @@
         android:padding="5dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="bottom"
+        android:layout_marginBottom="5dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        >
+
+        <TextView
+            android:id="@+id/item_source_doc"
+            android:layout_width="0dp"
+            android:layout_weight="5"
+            android:layout_height="match_parent"
+            android:text="来源+时间"
+            android:textColor="#BDC7D8"
+            android:textSize="10sp" />
+        <TextView
+            android:id="@+id/item_comment_doc"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="？"
+            android:gravity="right"
+            android:textColor="#BDC7D8"
+            android:textSize="10sp"/>
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:gravity="left"
+            android:scaleType="fitStart"
+            android:src="@drawable/comment_item_doc"/>
+        <ImageView
+            android:id="@+id/item_del_doc"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:gravity="left"
+            android:scaleType="fitStart"
+            android:src="@drawable/del_item_doc"/>
+    </LinearLayout>
 </LinearLayout>

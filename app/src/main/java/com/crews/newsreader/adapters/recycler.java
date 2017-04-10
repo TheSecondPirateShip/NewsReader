@@ -58,8 +58,9 @@ public class recycler extends RecyclerView.Adapter<recycler.mViewHolder> {
         });
         String s = item.getType()+": "+item.getTitle();
         holder.title.setText(s);
-        MimageLoader.build(mContext).setBitmap(item.getCommentsUrl(),holder.img);
+        MimageLoader.build(mContext).setBitmap(item.getThumbnail(),holder.img);
         holder.source.setText(item.getSource() + " " + item.getUpdateTime());
+        holder.comment_num.setText(item.getComments());
     }
 
     @Override
@@ -70,12 +71,14 @@ public class recycler extends RecyclerView.Adapter<recycler.mViewHolder> {
     class mViewHolder extends RecyclerView.ViewHolder {
         TextView title;
         TextView source;
+        TextView comment_num;
         ImageView img;
         public mViewHolder(View itemView) {
             super(itemView);
             title = (TextView)itemView.findViewById(R.id.item_title_doc);
             img = (ImageView)itemView.findViewById(R.id.item_img_doc);
             source = (TextView) itemView.findViewById(R.id.item_source_doc);
+            comment_num = (TextView) itemView.findViewById(R.id.item_comment_doc);
         }
     }
 }
