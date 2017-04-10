@@ -14,7 +14,7 @@
         android:orientation="horizontal">
 
         <ImageView
-
+            android:src="@drawable/img"
             android:id="@+id/item_img_doc"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
