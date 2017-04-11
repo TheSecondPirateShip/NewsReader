@@ -133,7 +133,7 @@ public class MainActivity extends AppCompatActivity {
     /**
      * 从网络中加载
      */
-    private void getFromHttp(){
+    private void getFromHttp(final int mode){
         String url = "http://suo.im/1kHreH";
         HttpUtil.sendHttpRequest(url, new HttpUtil.CallBack() {
             @Override
