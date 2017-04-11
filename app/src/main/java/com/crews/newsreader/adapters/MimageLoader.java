@@ -167,23 +167,20 @@ public class MimageLoader {
             urlConnection.setDoInput(true);
             urlConnection.connect();
             inputStream = urlConnection.getInputStream();
-            //bitmap = mImageResizer.decodeSampleBitmapFromInputStream(inputStream, reqWidth, reqHeight);
-            bitmap = BitmapFactory.decodeStream(inputStream);
-            if(bitmap != null) {
-                saveBitmap(bitmap, mFilePath, url, reqWidth, reqHeight);//将bitmap保存到本地
-                addBitmapToMemoryCache(url,bitmap);//保存到缓存
+            if(inputStream != null) {
+                //bitmap = mImageResizer.decodeSampleBitmapFromInputStream(inputStream, reqWidth, reqHeight);
+                bitmap = BitmapFactory.decodeStream(inputStream);
+                if (bitmap != null) {
+                    saveBitmap(bitmap, mFilePath, url, reqWidth, reqHeight);//将bitmap保存到本地
+                    addBitmapToMemoryCache(url, bitmap);//保存到缓存
+                }
+                inputStream.close();
+                urlConnection.disconnect();
             }
         } catch (MalformedURLException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
-        } finally {
-            try {
-                inputStream.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            urlConnection.disconnect();
         }
         return bitmap;
     }

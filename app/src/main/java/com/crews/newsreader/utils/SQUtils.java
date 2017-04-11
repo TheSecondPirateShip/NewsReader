@@ -23,7 +23,6 @@ public class SQUtils {
      * @param itemList
      */
     public void insert(SQLiteDatabase db, ContentValues values, List<Item> itemList){
-        Log.d("123456","数据库插入没有问题");
         for(int i = 0;i<itemList.size();i++){
             values.put("date",itemList.get(i).getUpdateTime());
             values.put("title",itemList.get(i).getTitle());
@@ -35,6 +34,7 @@ public class SQUtils {
             db.insert("Data",null,values);
             values.clear();
         }
+        Log.d("123456","数据库插入没有问题");
     }
 
     /**

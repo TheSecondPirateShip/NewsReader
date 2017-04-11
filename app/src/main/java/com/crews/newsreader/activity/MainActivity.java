@@ -108,6 +108,7 @@ public class MainActivity extends AppCompatActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
+                        relist();
                         adapter.refresh(itemList);
                     }
                 });
@@ -130,15 +131,36 @@ public class MainActivity extends AppCompatActivity {
      */
     private void showLog(){
         for (Item n : itemList) {
-            Log.d(TAG,n.getTitle());
+            Log.d(TAG,n.getType()+": "+n.getTitle());
         }
 
     }
 
+    /**
+     * 跳转内容界面
+     * @param c 当前activity
+     * @param item 新闻的item类
+     */
     private void toActivity(Class c,Item item){
         Intent intent = new Intent(MainActivity.this, c);
         //传递这个新闻的类
         intent.putExtra("new", item);
         startActivity(intent);
+    }
+
+    private void relist(){
+        List<Item> deletelist = new ArrayList<>();
+        for (int i=0;i<itemList.size();i++) {
+            if (itemList.get(i).getType().equals("web")) {
+                deletelist.add(itemList.get(i));
+            }
+            if(itemList.get(i).getSource() == null){
+                itemList.get(i).setSource("未知");
+            }
+            if(itemList.get(i).getUpdateTime() == null){
+                itemList.get(i).setUpdateTime("未知");
+            }
+        }
+        itemList.removeAll(deletelist);
     }
 }
