@@ -11,6 +11,9 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.KeyEvent;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -41,7 +44,8 @@ public class MainActivity extends AppCompatActivity {
     private LinearLayoutManager mLinearLayoutManager;
     private int lastVisibleItem;
     private SwipeRefreshLayout mSwipeRefreshLayout;
-
+    //数据库查询的结果日期
+    private String date;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,14 +106,31 @@ public class MainActivity extends AppCompatActivity {
 
     private void createSQ(){
         dbHelper = new MyDataBaseHelper(this,"Data.db",null,1);
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        SQUtils utils = new SQUtils();
+        final SQLiteDatabase db = dbHelper.getWritableDatabase();
+        final ContentValues values = new ContentValues();
+        final SQUtils utils = new SQUtils();
         //插入方法
         Log.d("666","数据库开始");
         utils.insert(db,values,itemList);
-        String obj = editText.getText().toString();
-        utils.query(db,values,obj);
+        editText.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View view, int i, KeyEvent keyEvent) {
+                if (i == KeyEvent.KEYCODE_ENTER) {
+                    ((InputMethodManager) getSystemService(INPUT_METHOD_SERVICE))
+                            .hideSoftInputFromWindow(MainActivity.this.getCurrentFocus()
+                                    .getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+                    String obj = editText.getText().toString();
+                    date = utils.query(db,obj);
+                    if(date != null){
+                        Toast.makeText(view.getContext(),"查询成功", Toast.LENGTH_LONG).show();}
+                    else {
+                        Toast.makeText(view.getContext(),"无结果",Toast.LENGTH_LONG).show();
+                    }
+                    return true;
+                }
+                return false;
+            }
+        });
     }
 
 
