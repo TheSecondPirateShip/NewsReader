@@ -9,6 +9,7 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.widget.EditText;
+import android.widget.ImageView;
 
 import com.crews.newsreader.R;
 import com.crews.newsreader.activity.content.DocActivity;
@@ -37,6 +38,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ImageView view = (ImageView)findViewById(R.id.zctt) ;
+        view.setFocusable(true);//启动app时把焦点放在其他控件（不放在editext上）上防止弹出虚拟键盘
+        view.setFocusableInTouchMode(true);
+        view.requestFocus();
+
         bind();
         getFromHttp();
         setRecyclerView();
