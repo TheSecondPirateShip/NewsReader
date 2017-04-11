@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -39,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
     private MyDataBaseHelper dbHelper;
     private LinearLayoutManager mLinearLayoutManager;
     private int lastVisibleItem;
-
+    private SwipeRefreshLayout mSwipeRefreshLayout;
 
 
     @Override
@@ -57,9 +58,21 @@ public class MainActivity extends AppCompatActivity {
         getFromHttp(1);
         setRecyclerView();
         createSQ();
-
+        setSwipeRefresh();
         setFootView();
 
+
+    }
+
+    private void setSwipeRefresh() {
+        mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh);
+        mSwipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary);
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                getFromHttp(3);
+            }
+        });
 
     }
 
@@ -133,7 +146,7 @@ public class MainActivity extends AppCompatActivity {
     /**
      * 从网络中加载
      */
-    private void getFromHttp(){
+    private void getFromHttp(final int mode){
         String url = "http://suo.im/1kHreH";
         HttpUtil.sendHttpRequest(url, new HttpUtil.CallBack() {
             @Override
@@ -146,13 +159,20 @@ public class MainActivity extends AppCompatActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
+                        relist();
                         if(mode ==1) {
-                            relist();
+
                             adapter.refresh(itemList);
                         }
-                        if(mode == 2){
-                            relist();
+                        if(mode == 2){//上拉加载更多
+
                             adapter.addMoreItem(itemList);
+                        }
+                        if(mode == 3){//下拉刷新界面
+
+                              adapter.refresh(itemList);
+                            adapter.notifyDataSetChanged();
+                            mSwipeRefreshLayout.setRefreshing(false);
                         }
                     }
                 });

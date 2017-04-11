@@ -58,7 +58,7 @@ public class recycler extends RecyclerView.Adapter<recycler.mViewHolder> {
     public void onBindViewHolder(mViewHolder holder, int position) {
         if(holder.viewType == TYPE_NORMAL && position != 0){
 
-            final Item item = list.get(position-1);
+            final Item item = list.get(position);
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
