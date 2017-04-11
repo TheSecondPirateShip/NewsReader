@@ -4,12 +4,16 @@ import android.content.ContentValues;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.crews.newsreader.R;
 import com.crews.newsreader.activity.content.DocActivity;
@@ -33,20 +37,54 @@ public class MainActivity extends AppCompatActivity {
     private List<Item> itemList;
     private recycler adapter;
     private MyDataBaseHelper dbHelper;
+    private LinearLayoutManager mLinearLayoutManager;
+    private int lastVisibleItem;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        mLinearLayoutManager = new GridLayoutManager(this, 1);
+
         ImageView view = (ImageView)findViewById(R.id.zctt) ;
         view.setFocusable(true);//启动app时把焦点放在其他控件（不放在editext上）上防止弹出虚拟键盘
         view.setFocusableInTouchMode(true);
         view.requestFocus();
 
         bind();
-        getFromHttp();
+        getFromHttp(1);
         setRecyclerView();
         createSQ();
+
+        setFootView();
+
+
+    }
+
+    private void setFootView() {
+        recyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+
+                if (newState ==RecyclerView.SCROLL_STATE_IDLE && lastVisibleItem + 1 ==adapter.getItemCount()) {
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            getFromHttp(2);
+                            Toast.makeText(MainActivity.this,"成功获取新数据",Toast.LENGTH_SHORT).show();
+                        }
+                    },1000);
+                }
+            }
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView,dx, dy);
+                lastVisibleItem =mLinearLayoutManager.findLastVisibleItemPosition();
+            }
+        });
     }
 
     private void createSQ(){
@@ -69,7 +107,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setRecyclerView(){
-        recyclerView.setLayoutManager(new GridLayoutManager(this, 1));
+        recyclerView.setLayoutManager(mLinearLayoutManager);
         adapter = new recycler(new recycler.CallBack() {
             @Override
             public void onClick(Item item) {
@@ -95,7 +133,7 @@ public class MainActivity extends AppCompatActivity {
     /**
      * 从网络中加载
      */
-    private void getFromHttp(){
+    private void getFromHttp(final int mode){
         String url = "http://suo.im/1kHreH";
         HttpUtil.sendHttpRequest(url, new HttpUtil.CallBack() {
             @Override
@@ -108,7 +146,14 @@ public class MainActivity extends AppCompatActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        adapter.refresh(itemList);
+                        if(mode ==1) {
+                            relist();
+                            adapter.refresh(itemList);
+                        }
+                        if(mode == 2){
+                            relist();
+                            adapter.addMoreItem(itemList);
+                        }
                     }
                 });
             }
@@ -130,15 +175,36 @@ public class MainActivity extends AppCompatActivity {
      */
     private void showLog(){
         for (Item n : itemList) {
-            Log.d(TAG,n.getTitle());
+            Log.d(TAG,n.getType()+": "+n.getTitle());
         }
 
     }
 
+    /**
+     * 跳转内容界面
+     * @param c 当前activity
+     * @param item 新闻的item类
+     */
     private void toActivity(Class c,Item item){
         Intent intent = new Intent(MainActivity.this, c);
         //传递这个新闻的类
         intent.putExtra("new", item);
         startActivity(intent);
+    }
+
+    private void relist(){
+        List<Item> deletelist = new ArrayList<>();
+        for (int i=0;i<itemList.size();i++) {
+            if (itemList.get(i).getType().equals("web")) {
+                deletelist.add(itemList.get(i));
+            }
+            if(itemList.get(i).getSource() == null){
+                itemList.get(i).setSource("未知");
+            }
+            if(itemList.get(i).getUpdateTime() == null){
+                itemList.get(i).setUpdateTime("未知");
+            }
+        }
+        itemList.removeAll(deletelist);
     }
 }
