@@ -4,12 +4,20 @@ import android.content.ContentValues;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.KeyEvent;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.crews.newsreader.R;
 import com.crews.newsreader.activity.content.DocActivity;
@@ -33,32 +41,96 @@ public class MainActivity extends AppCompatActivity {
     private List<Item> itemList;
     private recycler adapter;
     private MyDataBaseHelper dbHelper;
+    private LinearLayoutManager mLinearLayoutManager;
+    private int lastVisibleItem;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
+    //数据库查询的结果日期
+    private String date;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        mLinearLayoutManager = new GridLayoutManager(this, 1);
+
         ImageView view = (ImageView)findViewById(R.id.zctt) ;
         view.setFocusable(true);//启动app时把焦点放在其他控件（不放在editext上）上防止弹出虚拟键盘
         view.setFocusableInTouchMode(true);
         view.requestFocus();
 
         bind();
-        getFromHttp();
+        getFromHttp(1);
         setRecyclerView();
         createSQ();
+        setSwipeRefresh();
+        setFootView();
+
+
+    }
+
+    private void setSwipeRefresh() {
+        mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh);
+        mSwipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary);
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                getFromHttp(3);
+            }
+        });
+
+    }
+
+    private void setFootView() {
+        recyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+
+                if (newState ==RecyclerView.SCROLL_STATE_IDLE && lastVisibleItem + 1 ==adapter.getItemCount()) {
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            getFromHttp(2);
+                            Toast.makeText(MainActivity.this,"成功获取新数据",Toast.LENGTH_SHORT).show();
+                        }
+                    },1000);
+                }
+            }
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView,dx, dy);
+                lastVisibleItem =mLinearLayoutManager.findLastVisibleItemPosition();
+            }
+        });
     }
 
     private void createSQ(){
         dbHelper = new MyDataBaseHelper(this,"Data.db",null,1);
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        SQUtils utils = new SQUtils();
+        final SQLiteDatabase db = dbHelper.getWritableDatabase();
+        final ContentValues values = new ContentValues();
+        final SQUtils utils = new SQUtils();
         //插入方法
         Log.d("666","数据库开始");
         utils.insert(db,values,itemList);
-        String obj = editText.getText().toString();
-        utils.query(db,values,obj);
+        editText.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View view, int i, KeyEvent keyEvent) {
+                if (i == KeyEvent.KEYCODE_ENTER) {
+                    ((InputMethodManager) getSystemService(INPUT_METHOD_SERVICE))
+                            .hideSoftInputFromWindow(MainActivity.this.getCurrentFocus()
+                                    .getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+                    String obj = editText.getText().toString();
+                    date = utils.query(db,obj);
+                    if(date != null){
+                        Toast.makeText(view.getContext(),"查询成功", Toast.LENGTH_LONG).show();}
+                    else {
+                        Toast.makeText(view.getContext(),"无结果",Toast.LENGTH_LONG).show();
+                    }
+                    return true;
+                }
+                return false;
+            }
+        });
     }
 
 
@@ -95,7 +167,7 @@ public class MainActivity extends AppCompatActivity {
     /**
      * 从网络中加载
      */
-    private void getFromHttp(){
+    private void getFromHttp(final int mode){
         String url = "http://suo.im/1kHreH";
         HttpUtil.sendHttpRequest(url, new HttpUtil.CallBack() {
             @Override
@@ -104,12 +176,25 @@ public class MainActivity extends AppCompatActivity {
                 //加载到集合
                 itemList.addAll(data.getItem());
                 showLog();
-                relist();
                 //刷新recycler
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        adapter.refresh(itemList);
+                        relist();
+                        if(mode ==1) {
+
+                            adapter.refresh(itemList);
+                        }
+                        if(mode == 2){//上拉加载更多
+
+                            adapter.addMoreItem(itemList);
+                        }
+                        if(mode == 3){//下拉刷新界面
+
+                              adapter.refresh(itemList);
+                            adapter.notifyDataSetChanged();
+                            mSwipeRefreshLayout.setRefreshing(false);
+                        }
                     }
                 });
             }
@@ -131,7 +216,7 @@ public class MainActivity extends AppCompatActivity {
      */
     private void showLog(){
         for (Item n : itemList) {
-            Log.d(TAG,n.getType()+": "+n.getTitle());
+            Log.d(TAG,n.getTitle());
         }
 
     }

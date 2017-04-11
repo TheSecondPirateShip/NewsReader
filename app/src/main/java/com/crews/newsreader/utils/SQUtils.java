@@ -52,16 +52,19 @@ public class SQUtils {
     public void update(){
         //此方法暂时无用
     }
-    public void query(SQLiteDatabase db,ContentValues values,String obj){
+    public String query(SQLiteDatabase db,String obj){
         Cursor cursor = db.query("Data",null,null,null,null,null,null);
         if(cursor.moveToFirst()){
             do{
+                Log.d("555","开始查询了");
                 String date = cursor.getString(cursor.getColumnIndex("date"));
-                if(date == obj){
-                    //执行操作
-                    break;
+                if(date.equals(obj)){
+
+                    //返回日期，从SQ中取出当天的新闻;
+                    return date;
                 }
             }while (cursor.moveToNext());
         }
+        return null;
     }
 }
