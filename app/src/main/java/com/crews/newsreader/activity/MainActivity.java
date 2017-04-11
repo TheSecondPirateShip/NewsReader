@@ -104,11 +104,11 @@ public class MainActivity extends AppCompatActivity {
                 //加载到集合
                 itemList.addAll(data.getItem());
                 showLog();
+                relist();
                 //刷新recycler
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        relist();
                         adapter.refresh(itemList);
                     }
                 });
