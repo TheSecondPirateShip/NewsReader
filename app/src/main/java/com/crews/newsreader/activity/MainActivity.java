@@ -107,7 +107,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setRecyclerView(){
-        recyclerView.setLayoutManager(mLinearLayoutManager);
+        recyclerView.setLayoutManager(new GridLayoutManager(this, 1));
         adapter = new recycler(new recycler.CallBack() {
             @Override
             public void onClick(Item item) {
@@ -133,7 +133,7 @@ public class MainActivity extends AppCompatActivity {
     /**
      * 从网络中加载
      */
-    private void getFromHttp(final int mode){
+    private void getFromHttp(){
         String url = "http://suo.im/1kHreH";
         HttpUtil.sendHttpRequest(url, new HttpUtil.CallBack() {
             @Override
@@ -175,7 +175,7 @@ public class MainActivity extends AppCompatActivity {
      */
     private void showLog(){
         for (Item n : itemList) {
-            Log.d(TAG,n.getType()+": "+n.getTitle());
+            Log.d(TAG,n.getTitle());
         }
 
     }
