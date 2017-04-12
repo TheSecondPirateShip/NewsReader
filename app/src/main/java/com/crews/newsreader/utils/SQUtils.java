@@ -79,21 +79,20 @@ public class SQUtils {
     public void update(){
         //此方法暂时无用
     }
-    public String query(String obj){
+    public boolean query(String obj){
         Cursor cursor = db.query("News",null,null,null,null,null,null);
         if(cursor.moveToFirst()){
             do{
-                Log.d(TAG,"开始查询了");
-                String date = cursor.getString(cursor.getColumnIndex("date"));
-                if(date.equals(obj)){
-
+                Log.d(TAG,"开始查询");
+                String title = cursor.getString(cursor.getColumnIndex("title"));
+                if(title.contains(obj)){
                     //返回日期，从SQ中取出当天的新闻;
-                    return date;
+                    return true;
                 }
             }while (cursor.moveToNext());
         }
         cursor.close();
-        return null;
+        return false;
     }
 
 

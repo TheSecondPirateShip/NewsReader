@@ -38,9 +38,9 @@
                 android:layout_weight="2"
                 android:background="@drawable/item_shape"
                 android:singleLine="true"
-                android:maxLength="10"
+                android:maxLength="12"
                 android:imeOptions="actionSearch"
-                android:hint="  搜索日期" />
+                android:hint="  搜索一下你感兴趣的吧" />
 
         </LinearLayout>
 
