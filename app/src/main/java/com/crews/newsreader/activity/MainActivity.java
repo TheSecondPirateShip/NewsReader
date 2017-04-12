@@ -60,9 +60,9 @@ public class MainActivity extends AppCompatActivity {
 
         bind();
         setWidget();
-        //getFromSQL();
-        setRecyclerView();
 
+        setRecyclerView();
+        getFromSQL();
         setSwipeRefresh();
         setFootView();
 
