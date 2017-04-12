@@ -13,6 +13,7 @@ public class Body {
     private List<String> itags;
     private String wapurl;
     private String wwwurl;
+    private String source;
     private List<Slides> slides;
 
     public String getAuthor() {
@@ -71,6 +72,13 @@ public class Body {
         this.wwwurl = wwwurl;
     }
 
+    public String getSource(){
+        return source;
+    }
+
+    private void setSource(String source){
+        this.source = source;
+    }
 }
 
 

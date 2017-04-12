@@ -118,7 +118,6 @@ public class recycler extends RecyclerView.Adapter<recycler.mViewHolder> {
         if(position + 1 == getItemCount()){
             return TYPE_FOOTER;
         }
-//        不知道为啥总是崩掉  先注释掉
         else if (list.get(position).getType().equals("slide")){
             return TYPE_SLIDES;
         }
