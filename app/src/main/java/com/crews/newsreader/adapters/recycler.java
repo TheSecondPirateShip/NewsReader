@@ -63,7 +63,6 @@ public class recycler extends RecyclerView.Adapter<recycler.mViewHolder> {
     @Override
     public void onBindViewHolder(mViewHolder holder, final int position) {
         if(holder.viewType == TYPE_NORMAL && position != 0){
-
             final Item item = list.get(position);
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -79,23 +78,33 @@ public class recycler extends RecyclerView.Adapter<recycler.mViewHolder> {
             holder.img_del_doc.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                     //删除item不会写  交给你们了
+                    if(list.size() >= 2) {
+                        list.remove(position);
+                        notifyDataSetChanged();
+                    }
                     Toast.makeText(mContext,"删除此条",Toast.LENGTH_SHORT).show();
                 }
             });
         }
         if( holder.viewType == TYPE_SLIDES ){
             final Item item = list.get(position);
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    callBack.onClick(item);
+                }
+            });
             MimageLoader.build(mContext).setBitmap(item.getStyle().getImages().get(0),holder.img_slides1);
             MimageLoader.build(mContext).setBitmap(item.getStyle().getImages().get(1),holder.img_slides2);
             MimageLoader.build(mContext).setBitmap(item.getStyle().getImages().get(2),holder.img_slides3);
-            holder.source_slides.setText(item.getSource());
+            holder.source_slides.setText(item.getSource() + "  " + item.getUpdateTime());
             holder.title_slides.setText(item.getTitle());
-            holder.comment_num_doc.setText(item.getComments());
+            holder.comment_num_slides.setText(item.getComments());
             holder.img_del_slides.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    //删除item不会写  交给你们了
+                    list.remove(position);
+                    notifyDataSetChanged();
                     Toast.makeText(mContext,"删除此条",Toast.LENGTH_SHORT).show();
                 }
             });
@@ -110,9 +119,9 @@ public class recycler extends RecyclerView.Adapter<recycler.mViewHolder> {
             return TYPE_FOOTER;
         }
 //        不知道为啥总是崩掉  先注释掉
-//        else if (list.get(position).getStyle().getType().equals("slides")){
-//            return TYPE_SLIDES;
-//        }
+        else if (list.get(position).getType().equals("slide")){
+            return TYPE_SLIDES;
+        }
         else {
             return TYPE_NORMAL;
         }
