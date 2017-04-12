@@ -182,15 +182,15 @@ public class MainActivity extends AppCompatActivity {
         adapter = new recycler(new recycler.CallBack() {
             @Override
             public void onClick(Item item) {
-                if(item.getType().equals("doc"))
+                if(item.getLink().getType().equals("doc"))
                 {
                     toActivity(DocActivity.class,item);
                 }
-                else if(item.getType().equals("slide"))
+                else if(item.getLink().getType().equals("slide"))
                 {
                     toActivity(SlideActivity.class,item);
                 }
-                else if(item.getType().equals("phvideo")){
+                else if(item.getLink().getType().equals("phvideo")){
                     toActivity(PhvideoActivity.class,item);
                 }
                 /**
