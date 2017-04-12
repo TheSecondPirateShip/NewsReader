@@ -87,8 +87,25 @@ public class recycler extends RecyclerView.Adapter<recycler.mViewHolder> {
     public int getItemCount() {
         return list.size() + 1;
     }
-    public void addMoreItem(List<Item> newDatas) {
+
+    /**
+     * 上拉加载时把数据添加在下面
+     * @param newDatas
+     */
+    public void addMoreItemBottom(List<Item> newDatas) {
         list.addAll(newDatas);
+        notifyDataSetChanged();
+    }
+
+    /**
+     * 下拉加载时把数据添加在上面
+     * @param newDatas
+     */
+    public void addMoreItemTop(List<Item> newDatas){
+        List<Item> temp = new ArrayList<>();
+        temp.addAll(newDatas);
+        temp.addAll(list);
+        list = temp;
         notifyDataSetChanged();
     }
 

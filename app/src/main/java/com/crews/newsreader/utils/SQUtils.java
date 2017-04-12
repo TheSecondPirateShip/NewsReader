@@ -20,19 +20,26 @@ import java.util.List;
 
 public class SQUtils {
     private final String TAG = "SQUtils";
-    MyDataBaseHelper dataBaseHelper = null;
+    static MyDataBaseHelper dataBaseHelper = null;
     Context mContext = null;
-    SQLiteDatabase db = null;
+    static SQLiteDatabase db = null;
 
 
 
     public SQUtils(Context context){
         mContext = context;
-        dataBaseHelper = new MyDataBaseHelper(context,"Data.db",null,1);
+        dataBaseHelper = new MyDataBaseHelper(context,"News.db",null,1);
         db = dataBaseHelper.getWritableDatabase();
         Log.d(TAG,"创建数据库成功");
     }
 
+    public SQLiteDatabase getDb(){
+        return db;
+    }
+
+    public Cursor getCursor(){
+        return db.query("News", null, null, null, null, null, null);
+    }
 
     /**
      * 数据库的插入方法
@@ -50,7 +57,7 @@ public class SQUtils {
                 values.put("url", itemList.get(i).getLink().getUrl());
                 values.put("comments", itemList.get(i).getComments());
 
-                db.insert("Data", null, values);
+                db.insert("News", null, values);
                 values.clear();
             }
             Log.d(TAG, "数据库插入没有问题");
@@ -62,7 +69,7 @@ public class SQUtils {
      * 数据库的删除方法（全部删除）
      */
     public void deleteAll(){
-        db.delete("Data",null,null);
+        db.delete("News",null,null);
         Log.d(TAG, "数据库中数据全部删除");
     }
 
@@ -73,7 +80,7 @@ public class SQUtils {
         //此方法暂时无用
     }
     public String query(String obj){
-        Cursor cursor = db.query("Data",null,null,null,null,null,null);
+        Cursor cursor = db.query("News",null,null,null,null,null,null);
         if(cursor.moveToFirst()){
             do{
                 Log.d(TAG,"开始查询了");
@@ -95,7 +102,7 @@ public class SQUtils {
         /**
          * 建表
          */
-        public static final String CREATE_DATA = "create table Data(" +
+        public static final String CREATE_DATA = "create table News(" +
                 "id integer primary key autoincrement," +
                 "date text," +
                 "title text," +

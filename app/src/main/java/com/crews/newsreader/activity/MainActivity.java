@@ -1,7 +1,7 @@
 package com.crews.newsreader.activity;
 
-import android.content.ContentValues;
 import android.content.Intent;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Handler;
@@ -16,7 +16,6 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.crews.newsreader.R;
@@ -26,6 +25,7 @@ import com.crews.newsreader.activity.content.SlideActivity;
 import com.crews.newsreader.adapters.recycler;
 import com.crews.newsreader.beans.Main.Data;
 import com.crews.newsreader.beans.Main.Item;
+import com.crews.newsreader.beans.Main.Link;
 import com.crews.newsreader.utils.HttpUtil;
 import com.crews.newsreader.utils.SQUtils;
 import com.google.gson.Gson;
@@ -59,7 +59,8 @@ public class MainActivity extends AppCompatActivity {
         view.requestFocus();
 
         bind();
-        getFromHttp(1);
+        setWidget();
+        getFromSQL();
         setRecyclerView();
 
         setSwipeRefresh();
@@ -104,15 +105,44 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void createSQ(){
-        /*dbHelper = new MyDataBaseHelper(this,"Data.db",null,2);
-        db = dbHelper.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        utils = new SQUtils();
-        //插入方法
-        Log.d(TAG,"数据库开始");
-        utils.insert(db,values,itemList);*/
+    private void insertSQL(){
         sqUtil.insert(itemList);
+    }
+
+
+    private void bind(){
+        editText = (EditText) findViewById(R.id.edit_query);
+        recyclerView = (RecyclerView)findViewById(R.id.recyclerView);
+        mLinearLayoutManager = new GridLayoutManager(this, 1);
+        itemList = new ArrayList<>();
+        sqUtil = new SQUtils(this);
+    }
+
+    /**
+     * 启动时先从数据库中得到新闻
+     */
+    private void getFromSQL(){
+            Cursor cursor = sqUtil.getCursor();
+            if (cursor.moveToFirst()) {
+                do {
+                    Item item = new Item();
+                    item.setUpdateTime(cursor.getString(cursor.getColumnIndex("data")));
+                    Link link = new Link();
+                    link.setType(cursor.getString(cursor.getColumnIndex("type")));
+                    link.setUrl(cursor.getString(cursor.getColumnIndex("url")));
+                    item.setLink(link);
+                    item.setCommentsUrl(cursor.getString(cursor.getColumnIndex("commentsUrl")));
+                    item.setComments(cursor.getString(cursor.getColumnIndex("comments")));
+                    item.setThumbnail(cursor.getString(cursor.getColumnIndex("thumbnail")));
+                    item.setTitle(cursor.getString(cursor.getColumnIndex("title")));
+                    itemList.add(item);
+                } while (cursor.moveToNext());
+            }
+        else getFromHttp(1);
+        cursor.close();
+    }
+
+    private void setWidget(){
         editText.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View view, int i, KeyEvent keyEvent) {
@@ -132,15 +162,6 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
-    }
-
-
-    private void bind(){
-        editText = (EditText) findViewById(R.id.edit_query);
-        recyclerView = (RecyclerView)findViewById(R.id.recyclerView);
-        mLinearLayoutManager = new GridLayoutManager(this, 1);
-        itemList = new ArrayList<>();
-        sqUtil = new SQUtils(this);
     }
 
     private void setRecyclerView(){
@@ -179,7 +200,7 @@ public class MainActivity extends AppCompatActivity {
                 //加载到集合
                 itemList.addAll(data.getItem());
                 //从网络中获取数据之后加载到数据库
-                createSQ();
+                insertSQL();
                 showLog();
                 relist();//去除广告
                 //刷新recycler
@@ -192,11 +213,13 @@ public class MainActivity extends AppCompatActivity {
                         }
                         if(mode == 2){//上拉加载更多
 
-                            adapter.addMoreItem(itemList);
+                            adapter.addMoreItemBottom(itemList);
+
                         }
                         if(mode == 3){//下拉刷新界面
 
-                            adapter.refresh(itemList);
+                            adapter.addMoreItemTop(itemList);
+                            recyclerView.smoothScrollToPosition(0);
                             mSwipeRefreshLayout.setRefreshing(false);
                         }
                     }
