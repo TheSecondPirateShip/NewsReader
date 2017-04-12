@@ -60,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
 
         bind();
         setWidget();
-        getFromSQL();
+        //getFromSQL();
         setRecyclerView();
 
         setSwipeRefresh();
@@ -144,6 +144,7 @@ public class MainActivity extends AppCompatActivity {
                             //Log.d(TAG,item.getUpdateTime());
                         }while (cursor.moveToNext());
                         cursor.close();
+                        if(itemList != null)
                         adapter.refresh(itemList);
                     }
                     else{
