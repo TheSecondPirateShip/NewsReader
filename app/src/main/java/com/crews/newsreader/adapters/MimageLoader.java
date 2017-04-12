@@ -237,8 +237,8 @@ public class MimageLoader {
         if(imagePlaceID != -1){
             imageview.setImageResource(imagePlaceID);
         }
-//        final int width = imageview.getWidth();
-//        final int height = imageview.getHeight();
+        final int width = imageview.getWidth();
+        final int height = imageview.getHeight();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             if(imageview.getMinimumHeight() == 0)
             imageview.setMinimumHeight(10);
