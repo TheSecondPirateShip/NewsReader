@@ -9,6 +9,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.crews.newsreader.activity.MainActivity;
 import com.crews.newsreader.beans.Content.Content;
 import com.crews.newsreader.beans.Main.Item;
 
@@ -20,11 +21,9 @@ import java.util.List;
 
 public class SQUtils {
     private final String TAG = "SQUtils";
-    static MyDataBaseHelper dataBaseHelper = null;
-    Context mContext = null;
-    static SQLiteDatabase db = null;
-
-
+    private MyDataBaseHelper dataBaseHelper = null;
+    private Context mContext = null;
+    private SQLiteDatabase db = null;
 
     public SQUtils(Context context){
         mContext = context;

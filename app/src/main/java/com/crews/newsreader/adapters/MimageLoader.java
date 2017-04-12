@@ -237,8 +237,8 @@ public class MimageLoader {
         if(imagePlaceID != -1){
             imageview.setImageResource(imagePlaceID);
         }
-            final int width = 0;
-        final int height = 0;
+        final int width = imageview.getWidth();
+        final int height = imageview.getHeight();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             if(imageview.getMinimumHeight() == 0)
             imageview.setMinimumHeight(10);
@@ -247,7 +247,7 @@ public class MimageLoader {
         Runnable loadBitmapTask = new Runnable() {
             @Override
             public void run() {
-                Bitmap bitmap = loadBitmap(url, width, height);
+                Bitmap bitmap = loadBitmap(url, 0, 0);
                 if (bitmap != null) {
                     LoaderResult result = new LoaderResult(imageview, url, bitmap);
                     mMainHandler.obtainMessage(MESSAGE_POST_RESULT, result).sendToTarget();
