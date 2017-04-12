@@ -126,7 +126,6 @@ public class MimageLoader {
     private void addBitmapToMemoryCache(String url, Bitmap bitmap) {
         if (url != null && bitmap != null) {
             mMemoryCache.put(url, bitmap);
-            Log.d("zzzia","add To memory"+url);
         }
     }
 
@@ -137,12 +136,6 @@ public class MimageLoader {
      * @return
      */
     private Bitmap getBitmapFromMemoryCache(String url) {
-        if(mMemoryCache.get(url) != null){
-            Log.d("zzzia","从memory中找到"+url);
-        }
-        else {
-            Log.d("zzzia","get  == null"+url);
-        }
         return mMemoryCache.get(url);
     }
 
@@ -203,7 +196,6 @@ public class MimageLoader {
         for (int i = 0; i < files.length; i++) {
             if (files[i].getName().equals(key)) {
                 bitmap = BitmapFactory.decodeFile(files[i].getPath());
-                Log.d("zzzia", "从磁盘找到"+key);
                 break;
             }
         }

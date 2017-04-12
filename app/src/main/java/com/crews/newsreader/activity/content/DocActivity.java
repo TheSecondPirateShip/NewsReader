@@ -80,7 +80,8 @@ public class DocActivity extends AppCompatActivity {
     }
 
     private void getHTML(final Call call) {
-        final float width = this.getWindowManager().getDefaultDisplay().getWidth();
+        //final float width = this.getWindowManager().getDefaultDisplay().getWidth();
+        final float width = content.getWidth()*(float)0.8;
         new Thread(new Runnable() {
             @Override
             public void run() {

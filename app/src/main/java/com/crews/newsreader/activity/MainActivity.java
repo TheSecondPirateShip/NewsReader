@@ -27,7 +27,6 @@ import com.crews.newsreader.adapters.recycler;
 import com.crews.newsreader.beans.Main.Data;
 import com.crews.newsreader.beans.Main.Item;
 import com.crews.newsreader.utils.HttpUtil;
-import com.crews.newsreader.utils.MyDataBaseHelper;
 import com.crews.newsreader.utils.SQUtils;
 import com.google.gson.Gson;
 
@@ -40,18 +39,19 @@ public class MainActivity extends AppCompatActivity {
     private EditText editText;
     private List<Item> itemList;
     private recycler adapter;
-    private MyDataBaseHelper dbHelper;
+    //数据库
+    private SQUtils sqUtil;
     private LinearLayoutManager mLinearLayoutManager;
     private int lastVisibleItem;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     //数据库查询的结果日期
     private String date;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        mLinearLayoutManager = new GridLayoutManager(this, 1);
 
         ImageView view = (ImageView)findViewById(R.id.zctt) ;
         view.setFocusable(true);//启动app时把焦点放在其他控件（不放在editext上）上防止弹出虚拟键盘
@@ -61,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
         bind();
         getFromHttp(1);
         setRecyclerView();
-        createSQ();
+
         setSwipeRefresh();
         setFootView();
 
@@ -105,13 +105,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void createSQ(){
-        dbHelper = new MyDataBaseHelper(this,"Data.db",null,1);
-        final SQLiteDatabase db = dbHelper.getWritableDatabase();
-        final ContentValues values = new ContentValues();
-        final SQUtils utils = new SQUtils();
+        /*dbHelper = new MyDataBaseHelper(this,"Data.db",null,2);
+        db = dbHelper.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        utils = new SQUtils();
         //插入方法
-        Log.d("666","数据库开始");
-        utils.insert(db,values,itemList);
+        Log.d(TAG,"数据库开始");
+        utils.insert(db,values,itemList);*/
+        sqUtil.insert(itemList);
         editText.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View view, int i, KeyEvent keyEvent) {
@@ -120,7 +121,7 @@ public class MainActivity extends AppCompatActivity {
                             .hideSoftInputFromWindow(MainActivity.this.getCurrentFocus()
                                     .getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
                     String obj = editText.getText().toString();
-                    date = utils.query(db,obj);
+                    date = sqUtil.query(obj);
                     if(date != null){
                         Toast.makeText(view.getContext(),"查询成功", Toast.LENGTH_LONG).show();}
                     else {
@@ -137,7 +138,9 @@ public class MainActivity extends AppCompatActivity {
     private void bind(){
         editText = (EditText) findViewById(R.id.edit_query);
         recyclerView = (RecyclerView)findViewById(R.id.recyclerView);
+        mLinearLayoutManager = new GridLayoutManager(this, 1);
         itemList = new ArrayList<>();
+        sqUtil = new SQUtils(this);
     }
 
     private void setRecyclerView(){
@@ -168,19 +171,21 @@ public class MainActivity extends AppCompatActivity {
      * 从网络中加载
      */
     private void getFromHttp(final int mode){
-        String url = "http://suo.im/1kHreH";
+        String url = "http://api.irecommend.ifeng.com/irecommendList.php?userId=866048024885909&count=6&gv=5.2.6&av=5.2.6&uid=866048024885909&deviceid=866048024885909&proid=ifengnews&os=android_23&df=androidphone&vt=5&screen=720x1280&publishid=2024&nw=wifi&city=";
         HttpUtil.sendHttpRequest(url, new HttpUtil.CallBack() {
             @Override
             public void onFinish(String response) {
                 Data data = gsonData(response);
                 //加载到集合
                 itemList.addAll(data.getItem());
+                //从网络中获取数据之后加载到数据库
+                createSQ();
                 showLog();
+                relist();//去除广告
                 //刷新recycler
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        relist();
                         if(mode ==1) {
 
                             adapter.refresh(itemList);
@@ -191,8 +196,7 @@ public class MainActivity extends AppCompatActivity {
                         }
                         if(mode == 3){//下拉刷新界面
 
-                              adapter.refresh(itemList);
-                            adapter.notifyDataSetChanged();
+                            adapter.refresh(itemList);
                             mSwipeRefreshLayout.setRefreshing(false);
                         }
                     }
