@@ -122,7 +122,8 @@ public class MainActivity extends AppCompatActivity {
      * 启动时先从数据库中得到新闻
      */
     private void getFromSQL(){
-            Cursor cursor = sqUtil.getCursor();
+        //这个有问题
+            /*Cursor cursor = sqUtil.getCursor();
             if (cursor.moveToFirst()) {
                 do {
                     Item item = new Item();
@@ -137,9 +138,10 @@ public class MainActivity extends AppCompatActivity {
                     item.setTitle(cursor.getString(cursor.getColumnIndex("title")));
                     itemList.add(item);
                 } while (cursor.moveToNext());
+                cursor.close();
             }
-        else getFromHttp(1);
-        cursor.close();
+        else*/
+            getFromHttp(1);
     }
 
     private void setWidget(){
@@ -192,6 +194,7 @@ public class MainActivity extends AppCompatActivity {
      * 从网络中加载
      */
     private void getFromHttp(final int mode){
+        itemList.clear();
         String url = "http://api.irecommend.ifeng.com/irecommendList.php?userId=866048024885909&count=6&gv=5.2.6&av=5.2.6&uid=866048024885909&deviceid=866048024885909&proid=ifengnews&os=android_23&df=androidphone&vt=5&screen=720x1280&publishid=2024&nw=wifi&city=";
         HttpUtil.sendHttpRequest(url, new HttpUtil.CallBack() {
             @Override
