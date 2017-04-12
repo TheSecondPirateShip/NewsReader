@@ -118,7 +118,7 @@ public class recycler extends RecyclerView.Adapter<recycler.mViewHolder> {
         if(position + 1 == getItemCount()){
             return TYPE_FOOTER;
         }
-        else if (list.get(position).getType().equals("slide")){
+        else if (list.get(position).getLink().getType().equals("slides")){
             return TYPE_SLIDES;
         }
         else {

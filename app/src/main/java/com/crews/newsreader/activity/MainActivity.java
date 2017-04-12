@@ -44,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
     private LinearLayoutManager mLinearLayoutManager;
     private int lastVisibleItem;
     private SwipeRefreshLayout mSwipeRefreshLayout;
-    //数据库查询的date
+    //数据库查询信息
     private boolean search;
 
 
@@ -182,15 +182,15 @@ public class MainActivity extends AppCompatActivity {
         adapter = new recycler(new recycler.CallBack() {
             @Override
             public void onClick(Item item) {
-                if(item.getType().equals("doc"))
+                if(item.getLink().getType().equals("doc"))
                 {
                     toActivity(DocActivity.class,item);
                 }
-                else if(item.getType().equals("slide"))
+                else if(item.getLink().getType().equals("slide"))
                 {
                     toActivity(SlideActivity.class,item);
                 }
-                else if(item.getType().equals("phvideo")){
+                else if(item.getLink().getType().equals("phvideo")){
                     toActivity(PhvideoActivity.class,item);
                 }
                 /**
@@ -281,7 +281,7 @@ public class MainActivity extends AppCompatActivity {
     private void relist(){
         List<Item> deletelist = new ArrayList<>();
         for (int i=0;i<itemList.size();i++) {
-            if (itemList.get(i).getType().equals("web")) {
+            if (itemList.get(i).getType().equals("web")||itemList.get(i).getType().equals("phvideo")) {
                 deletelist.add(itemList.get(i));
             }
             if(itemList.get(i).getSource() == null){
