@@ -60,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
 
         bind();
         setWidget();
-        //getFromSQL();
+        getFromSQL();
         setRecyclerView();
 
         setSwipeRefresh();
@@ -123,25 +123,35 @@ public class MainActivity extends AppCompatActivity {
      */
     private void getFromSQL(){
         //这个有问题
-            /*Cursor cursor = sqUtil.getCursor();
-            if (cursor.moveToFirst()) {
-                do {
-                    Item item = new Item();
-                    item.setUpdateTime(cursor.getString(cursor.getColumnIndex("data")));
-                    Link link = new Link();
-                    link.setType(cursor.getString(cursor.getColumnIndex("type")));
-                    link.setUrl(cursor.getString(cursor.getColumnIndex("url")));
-                    item.setLink(link);
-                    item.setCommentsUrl(cursor.getString(cursor.getColumnIndex("commentsUrl")));
-                    item.setComments(cursor.getString(cursor.getColumnIndex("comments")));
-                    item.setThumbnail(cursor.getString(cursor.getColumnIndex("thumbnail")));
-                    item.setTitle(cursor.getString(cursor.getColumnIndex("title")));
-                    itemList.add(item);
-                } while (cursor.moveToNext());
-                cursor.close();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                    Cursor cursor = sqUtil.getDb().query("News", null, null, null, null, null, null);
+                    if (cursor != null && cursor.moveToFirst()) {
+                        Log.d(TAG,"cursor.moveToFirst()");
+                        do{
+                            Item item = new Item();
+                            item.setUpdateTime(cursor.getString(cursor.getColumnIndex("date")));
+                            Link link = new Link();
+                            link.setType(cursor.getString(cursor.getColumnIndex("type")));
+                            link.setUrl(cursor.getString(cursor.getColumnIndex("url")));
+                            item.setLink(link);
+                            item.setCommentsUrl(cursor.getString(cursor.getColumnIndex("commentsUrl")));
+                            item.setComments(cursor.getString(cursor.getColumnIndex("comments")));
+                            item.setThumbnail(cursor.getString(cursor.getColumnIndex("thumbnail")));
+                            item.setTitle(cursor.getString(cursor.getColumnIndex("title")));
+                            itemList.add(item);
+                            //Log.d(TAG,item.getUpdateTime());
+                        }while (cursor.moveToNext());
+                        cursor.close();
+                        adapter.refresh(itemList);
+                    }
+                    else{
+                        getFromHttp(1);
+                        Log.d(TAG,"getFromHttp(1);");
+                    }
             }
-        else*/
-            getFromHttp(1);
+        }).start();
     }
 
     private void setWidget(){
@@ -282,4 +292,5 @@ public class MainActivity extends AppCompatActivity {
         }
         itemList.removeAll(deletelist);
     }
+
 }
