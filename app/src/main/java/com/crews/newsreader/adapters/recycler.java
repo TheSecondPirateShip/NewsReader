@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 import com.crews.newsreader.R;
@@ -27,6 +28,8 @@ public class recycler extends RecyclerView.Adapter<recycler.mViewHolder> {
     }
     public static final int TYPE_FOOTER = 0;
     public static final int TYPE_NORMAL = 1;
+    public static final int TYPE_SLIDES = 2;
+    public static final int TYPE_SLIDE2 = 3;
     private CallBack callBack = null;
     private List<Item> list = new ArrayList<>();
     private Context mContext = null;
@@ -48,6 +51,9 @@ public class recycler extends RecyclerView.Adapter<recycler.mViewHolder> {
         if(viewType == TYPE_FOOTER) {
             View view = LayoutInflater.from(mContext).inflate(R.layout.recycler_load_more_layout, parent, false);
             return new mViewHolder(view,TYPE_FOOTER);
+        }else if (viewType == TYPE_SLIDES){
+            View view = LayoutInflater.from(mContext).inflate(R.layout.item_slides,parent,false);
+            return new mViewHolder(view,TYPE_SLIDES);
         }else {
             View view = LayoutInflater.from(mContext).inflate(R.layout.item_main, parent, false);
             return new mViewHolder(view,TYPE_NORMAL);
@@ -55,7 +61,7 @@ public class recycler extends RecyclerView.Adapter<recycler.mViewHolder> {
     }
 
     @Override
-    public void onBindViewHolder(mViewHolder holder, int position) {
+    public void onBindViewHolder(mViewHolder holder, final int position) {
         if(holder.viewType == TYPE_NORMAL && position != 0){
 
             final Item item = list.get(position);
@@ -66,10 +72,33 @@ public class recycler extends RecyclerView.Adapter<recycler.mViewHolder> {
                 }
             });
             String s = item.getType()+": "+item.getTitle();
-            holder.title.setText(s);
-            MimageLoader.build(mContext).setBitmap(item.getThumbnail(),holder.img);
-            holder.source.setText(item.getSource() + " " + item.getUpdateTime());
-            holder.comment_num.setText(item.getComments());
+            holder.title_doc.setText(s);
+            MimageLoader.build(mContext).setBitmap(item.getThumbnail(),holder.img_doc);
+            holder.source_doc.setText(item.getSource() + " " + item.getUpdateTime());
+            holder.comment_num_doc.setText(item.getComments());
+            holder.img_del_doc.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                     //删除item不会写  交给你们了
+                    Toast.makeText(mContext,"删除此条",Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+        if( holder.viewType == TYPE_SLIDES ){
+            final Item item = list.get(position);
+            MimageLoader.build(mContext).setBitmap(item.getStyle().getImages().get(0),holder.img_slides1);
+            MimageLoader.build(mContext).setBitmap(item.getStyle().getImages().get(1),holder.img_slides2);
+            MimageLoader.build(mContext).setBitmap(item.getStyle().getImages().get(2),holder.img_slides3);
+            holder.source_slides.setText(item.getSource());
+            holder.title_slides.setText(item.getTitle());
+            holder.comment_num_doc.setText(item.getComments());
+            holder.img_del_slides.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    //删除item不会写  交给你们了
+                    Toast.makeText(mContext,"删除此条",Toast.LENGTH_SHORT).show();
+                }
+            });
         }
         if(holder.viewType == TYPE_FOOTER){
             holder.mProgressBar.setVisibility(View.VISIBLE);
@@ -79,7 +108,12 @@ public class recycler extends RecyclerView.Adapter<recycler.mViewHolder> {
     public int getItemViewType(int position) {
         if(position + 1 == getItemCount()){
             return TYPE_FOOTER;
-        }else {
+        }
+//        不知道为啥总是崩掉  先注释掉
+//        else if (list.get(position).getStyle().getType().equals("slides")){
+//            return TYPE_SLIDES;
+//        }
+        else {
             return TYPE_NORMAL;
         }
     }
@@ -110,24 +144,31 @@ public class recycler extends RecyclerView.Adapter<recycler.mViewHolder> {
     }
 
     class mViewHolder extends RecyclerView.ViewHolder {
-        TextView title;
-        TextView source;
-        TextView comment_num;
+        TextView title_doc,comment_num_doc,source_doc;
+        TextView title_slides,comment_num_slides,source_slides;
         TextView add_more_text;
-        ImageView img;
+        ImageView img_doc,img_del_doc;
+        ImageView img_slides1,img_slides2,img_slides3,img_del_slides;
         ProgressBar mProgressBar;
         int viewType;
         public mViewHolder(View itemView,int viewType) {
             super(itemView);
 
             this.viewType = viewType;
-            title = (TextView)itemView.findViewById(R.id.item_title_doc);
-            img = (ImageView)itemView.findViewById(R.id.item_img_doc);
-            source = (TextView) itemView.findViewById(R.id.item_source_doc);
-            comment_num = (TextView) itemView.findViewById(R.id.item_comment_doc);
-
+            title_doc = (TextView)itemView.findViewById(R.id.item_title_doc);
+            img_doc = (ImageView)itemView.findViewById(R.id.item_img_doc);
+            source_doc = (TextView) itemView.findViewById(R.id.item_source_doc);
+            comment_num_doc = (TextView) itemView.findViewById(R.id.item_comment_doc);
             mProgressBar = (ProgressBar) itemView.findViewById(R.id.pb_loading);
             add_more_text = (TextView) itemView.findViewById(R.id.foot_view_item_tv);
+            img_del_doc = (ImageView) itemView.findViewById(R.id.item_del_doc);
+            title_slides = (TextView) itemView.findViewById(R.id.item_title_slides);
+            source_slides = (TextView) itemView.findViewById(R.id.item_source_slides);
+            comment_num_slides = (TextView) itemView.findViewById(R.id.item_comment_slides);
+            img_slides1 = (ImageView)itemView.findViewById(R.id.item_img_slides1);
+            img_slides2 = (ImageView)itemView.findViewById(R.id.item_img_slides2);
+            img_slides3 = (ImageView)itemView.findViewById(R.id.item_img_slides3);
+            img_del_slides = (ImageView)itemView.findViewById(R.id.item_del_slides);
         }
     }
 }
