@@ -9,7 +9,9 @@ import android.os.Bundle;
 import android.text.Html;
 import android.text.Spanned;
 import android.util.Log;
+import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.crews.newsreader.R;
 import com.crews.newsreader.adapters.MimageLoader;
@@ -29,6 +31,7 @@ public class DocActivity extends AppCompatActivity {
     private String text = null;
     private String title = null;
     private TextView header, content;
+    private long firstTime;
 
 
     @Override
@@ -49,6 +52,17 @@ public class DocActivity extends AppCompatActivity {
     private void bind() {
         header = (TextView) findViewById(R.id.doc_header);
         content = (TextView) findViewById(R.id.doc_content);
+        content.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                long secondTime = System.currentTimeMillis();
+                if (secondTime -  firstTime > 300) {
+                    firstTime = secondTime;
+                } else {
+                    onBackPressed();
+                }
+            }
+        });
     }
 
     private void getFromHttp() {
@@ -72,6 +86,14 @@ public class DocActivity extends AppCompatActivity {
                 });
             }
         });
+        try {
+            Thread thread = Thread.currentThread();
+            thread.sleep(3000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        Toast.makeText(DocActivity.this,"双击返回",Toast.LENGTH_SHORT).show();
+
     }
 
     private Content gsonContent(String response) {
