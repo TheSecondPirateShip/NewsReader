@@ -16,12 +16,18 @@ public class PhvideoActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_phvideo);
+        try {
+            Thread thread = Thread.currentThread();
+            thread.sleep(1500);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         init();
     }
 
     private void init(){
         Intent intent = getIntent();
         mItem = (Item)intent.getSerializableExtra("new");
-        Toast.makeText(this, "phvideo"+ mItem.getTitle(), Toast.LENGTH_SHORT).show();
+        Toast.makeText(this,"网络错误 网络错误", Toast.LENGTH_SHORT).show();
     }
 }

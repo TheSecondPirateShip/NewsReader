@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
@@ -44,9 +45,15 @@ public class MainActivity extends AppCompatActivity {
     private LinearLayoutManager mLinearLayoutManager;
     private int lastVisibleItem;
     private SwipeRefreshLayout mSwipeRefreshLayout;
-    //数据库查询的date
+    //数据库查询信息
     private boolean search;
+    private long firstTime;
 
+    private Handler handler = new Handler(){
+        public void handleMessage(Message message){
+            adapter.refresh(itemList);
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -143,8 +150,12 @@ public class MainActivity extends AppCompatActivity {
                             //Log.d(TAG,item.getUpdateTime());
                         }while (cursor.moveToNext());
                         cursor.close();
-                        if(itemList != null)
-                        adapter.refresh(itemList);
+                        if(itemList != null){
+                            //实在不会写回调  用hanlder
+                            Message message = new Message();
+                            message.what = 0;
+                            handler.sendMessage(message);
+                        }
                     }
                     else{
                         getFromHttp(1);
@@ -280,7 +291,7 @@ public class MainActivity extends AppCompatActivity {
     private void relist(){
         List<Item> deletelist = new ArrayList<>();
         for (int i=0;i<itemList.size();i++) {
-            if (itemList.get(i).getType().equals("web")) {
+            if (itemList.get(i).getType().equals("web")||itemList.get(i).getType().equals("phvideo")) {
                 deletelist.add(itemList.get(i));
             }
             if(itemList.get(i).getSource() == null){
@@ -291,6 +302,17 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         itemList.removeAll(deletelist);
+    }
+    @Override
+    public void onBackPressed() {
+        long secondTime = System.currentTimeMillis();
+
+        if (secondTime - firstTime > 2000) {
+            Toast.makeText(this, "再按一次退出", Toast.LENGTH_SHORT).show();
+            firstTime = secondTime;
+        } else {
+            super.onBackPressed();
+        }
     }
 
 }

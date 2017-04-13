@@ -29,7 +29,7 @@ public class recycler extends RecyclerView.Adapter<recycler.mViewHolder> {
     public static final int TYPE_FOOTER = 0;
     public static final int TYPE_NORMAL = 1;
     public static final int TYPE_SLIDES = 2;
-    public static final int TYPE_SLIDE2 = 3;
+    public static final int TYPE_PHVIDEO = 3;
     private CallBack callBack = null;
     private List<Item> list = new ArrayList<>();
     private Context mContext = null;
@@ -54,6 +54,9 @@ public class recycler extends RecyclerView.Adapter<recycler.mViewHolder> {
         }else if (viewType == TYPE_SLIDES){
             View view = LayoutInflater.from(mContext).inflate(R.layout.item_slides,parent,false);
             return new mViewHolder(view,TYPE_SLIDES);
+        }else if (viewType == TYPE_PHVIDEO){
+            View view = LayoutInflater.from(mContext).inflate(R.layout.item_phvideo,parent,false);
+            return new mViewHolder(view,TYPE_PHVIDEO);
         }else {
             View view = LayoutInflater.from(mContext).inflate(R.layout.item_main, parent, false);
             return new mViewHolder(view,TYPE_NORMAL);
@@ -103,11 +106,37 @@ public class recycler extends RecyclerView.Adapter<recycler.mViewHolder> {
             holder.img_del_slides.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    list.remove(position);
-                    notifyDataSetChanged();
+                    if(list.size() >= 2) {
+                        list.remove(position);
+                        notifyDataSetChanged();
+                    }
                     Toast.makeText(mContext,"删除此条",Toast.LENGTH_SHORT).show();
                 }
             });
+        }
+        if (holder.viewType == TYPE_PHVIDEO) {
+            final Item item = list.get(position);
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    callBack.onClick(item);
+                }
+            });
+            holder.img_del_phvideo.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if(list.size() >= 2) {
+                        list.remove(position);
+                        notifyDataSetChanged();
+                    }
+                    Toast.makeText(mContext,"删除此条",Toast.LENGTH_SHORT).show();
+                }
+            });
+            MimageLoader.build(mContext).setBitmap(item.getThumbnail(),holder.img_phvideo);
+            holder.comment_num_phvideo.setText(item.getComments());
+            holder.source_phvideo.setText(item.getSource() + item.getUpdateTime());
+            holder.title_phvideo.setText(item.getTitle());
+
         }
         if(holder.viewType == TYPE_FOOTER){
             holder.mProgressBar.setVisibility(View.VISIBLE);
@@ -117,11 +146,11 @@ public class recycler extends RecyclerView.Adapter<recycler.mViewHolder> {
     public int getItemViewType(int position) {
         if(position + 1 == getItemCount()){
             return TYPE_FOOTER;
-        }
-        else if (list.get(position).getLink().getType().equals("slides")){
+        }else if (list.get(position).getLink().getType().equals("slides")) {
             return TYPE_SLIDES;
-        }
-        else {
+        }else if (list.get(position).getLink().getType().equals("phvideo")) {
+            return TYPE_PHVIDEO;
+        }else {
             return TYPE_NORMAL;
         }
     }
@@ -154,9 +183,11 @@ public class recycler extends RecyclerView.Adapter<recycler.mViewHolder> {
     class mViewHolder extends RecyclerView.ViewHolder {
         TextView title_doc,comment_num_doc,source_doc;
         TextView title_slides,comment_num_slides,source_slides;
+        TextView title_phvideo,comment_num_phvideo,source_phvideo;
         TextView add_more_text;
         ImageView img_doc,img_del_doc;
         ImageView img_slides1,img_slides2,img_slides3,img_del_slides;
+        ImageView img_phvideo,img_del_phvideo;
         ProgressBar mProgressBar;
         int viewType;
         public mViewHolder(View itemView,int viewType) {
@@ -177,6 +208,12 @@ public class recycler extends RecyclerView.Adapter<recycler.mViewHolder> {
             img_slides2 = (ImageView)itemView.findViewById(R.id.item_img_slides2);
             img_slides3 = (ImageView)itemView.findViewById(R.id.item_img_slides3);
             img_del_slides = (ImageView)itemView.findViewById(R.id.item_del_slides);
+            title_phvideo = (TextView)itemView.findViewById(R.id.item_title_phvideo);
+            source_phvideo = (TextView)itemView.findViewById(R.id.item_source_phvideo);
+            comment_num_phvideo = (TextView)itemView.findViewById(R.id.item_comment_phvideo);
+            img_phvideo = (ImageView)itemView.findViewById(R.id.item_img_phvideo);
+            img_del_phvideo = (ImageView)itemView.findViewById(R.id.item_del_phvideo);
+
         }
     }
 }
