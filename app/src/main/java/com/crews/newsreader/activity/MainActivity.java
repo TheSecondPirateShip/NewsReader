@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
     private LinearLayoutManager mLinearLayoutManager;
     private int lastVisibleItem;
     private SwipeRefreshLayout mSwipeRefreshLayout;
-    //数据库查询的date
+    //数据库查询信息
     private boolean search;
     private long firstTime;
 
@@ -292,7 +292,7 @@ public class MainActivity extends AppCompatActivity {
     private void relist(){
         List<Item> deletelist = new ArrayList<>();
         for (int i=0;i<itemList.size();i++) {
-            if (itemList.get(i).getType().equals("web")) {
+            if (itemList.get(i).getType().equals("web")||itemList.get(i).getType().equals("phvideo")) {
                 deletelist.add(itemList.get(i));
             }
             if(itemList.get(i).getSource() == null){
