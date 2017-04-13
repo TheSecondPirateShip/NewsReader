@@ -70,7 +70,7 @@ public class recycler extends RecyclerView.Adapter<recycler.mViewHolder> {
                     callBack.onClick(item);
                 }
             });
-            String s = item.getType()+": "+item.getTitle();
+            String s = item.getLink().getType() + ": "+item.getTitle();
             holder.title_doc.setText(s);
             MimageLoader.build(mContext).setBitmap(item.getThumbnail(),holder.img_doc);
             holder.source_doc.setText(item.getSource() + " " + item.getUpdateTime());

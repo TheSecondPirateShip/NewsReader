@@ -122,7 +122,6 @@ public class MainActivity extends AppCompatActivity {
      * 启动时先从数据库中得到新闻
      */
     private void getFromSQL(){
-        //这个有问题
         new Thread(new Runnable() {
             @Override
             public void run() {
