@@ -23,6 +23,15 @@ public class Item implements Serializable{
     Style style;
     Link link;
     Phvideo phvideo;
+    int isRead;//为和数据库类型同步，用01判断
+
+    public int getIsRead() {
+        return isRead;
+    }
+
+    public void setIsRead(int isRead) {
+        this.isRead = isRead;
+    }
 
     public boolean isHasSlide() {
         return hasSlide;

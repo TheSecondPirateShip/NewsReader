@@ -1,6 +1,7 @@
 package com.crews.newsreader.adapters;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -64,82 +65,104 @@ public class recycler extends RecyclerView.Adapter<recycler.mViewHolder> {
     }
 
     @Override
-    public void onBindViewHolder(mViewHolder holder, final int position) {
-        if(holder.viewType == TYPE_NORMAL && position != 0){
-            final Item item = list.get(position);
-            holder.itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    callBack.onClick(item);
-                }
-            });
-            String s = item.getLink().getType() + ": "+item.getTitle();
-            holder.title_doc.setText(s);
-            MimageLoader.build(mContext).setBitmap(item.getThumbnail(),holder.img_doc);
-            holder.source_doc.setText(item.getSource() + " " + item.getUpdateTime());
-            holder.comment_num_doc.setText(item.getComments());
-            holder.img_del_doc.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if(list.size() >= 2) {
-                        list.remove(position);
-                        notifyDataSetChanged();
-                    }
-                    Toast.makeText(mContext,"删除此条",Toast.LENGTH_SHORT).show();
-                }
-            });
+    public void onBindViewHolder(final mViewHolder holder, final int position) {
+        Item item = null;
+        if(list.size()>position) {
+            item = list.get(position);
         }
-        if( holder.viewType == TYPE_SLIDES ){
-            final Item item = list.get(position);
-            holder.itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    callBack.onClick(item);
-                }
-            });
-            MimageLoader.build(mContext).setBitmap(item.getStyle().getImages().get(0),holder.img_slides1);
-            MimageLoader.build(mContext).setBitmap(item.getStyle().getImages().get(1),holder.img_slides2);
-            MimageLoader.build(mContext).setBitmap(item.getStyle().getImages().get(2),holder.img_slides3);
-            holder.source_slides.setText(item.getSource() + "  " + item.getUpdateTime());
-            holder.title_slides.setText(item.getTitle());
-            holder.comment_num_slides.setText(item.getComments());
-            holder.img_del_slides.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if(list.size() >= 2) {
-                        list.remove(position);
-                        notifyDataSetChanged();
+        if(item != null) {
+            if (holder.viewType == TYPE_NORMAL && position != 0) {
+                String s = item.getLink().getType() + ": " + item.getTitle();
+                holder.title_doc.setText(s);
+                MimageLoader.build(mContext).setImagePlace(R.mipmap.ic_launcher).setBitmap(item.getThumbnail(), holder.img_doc);
+                holder.source_doc.setText(item.getSource() + " " + item.getUpdateTime());
+                holder.comment_num_doc.setText(item.getComments());
+                setIsRead(item, holder.title_doc);
+                setIsRead(item, holder.source_doc);
+                setIsRead(item, holder.comment_num_doc);
+                //删除图标点击事件
+                holder.img_del_doc.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if(list.size() >= 2) {
+                            list.remove(position);
+                            notifyDataSetChanged();
+                        }
+                        Toast.makeText(mContext,"删除此条",Toast.LENGTH_SHORT).show();
                     }
-                    Toast.makeText(mContext,"删除此条",Toast.LENGTH_SHORT).show();
-                }
-            });
-        }
-        if (holder.viewType == TYPE_PHVIDEO) {
-            final Item item = list.get(position);
-            holder.itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    callBack.onClick(item);
-                }
-            });
-            holder.img_del_phvideo.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if(list.size() >= 2) {
-                        list.remove(position);
-                        notifyDataSetChanged();
+                });
+            }
+            if (holder.viewType == TYPE_SLIDES) {
+                MimageLoader.build(mContext).setImagePlace(R.mipmap.ic_launcher).setBitmap(item.getStyle().getImages().get(0), holder.img_slides1);
+                MimageLoader.build(mContext).setImagePlace(R.mipmap.ic_launcher).setBitmap(item.getStyle().getImages().get(1), holder.img_slides2);
+                MimageLoader.build(mContext).setImagePlace(R.mipmap.ic_launcher).setBitmap(item.getStyle().getImages().get(2), holder.img_slides3);
+                holder.source_slides.setText(item.getSource() + "  " + item.getUpdateTime());
+                holder.title_slides.setText(item.getTitle());
+                holder.comment_num_slides.setText(item.getComments());
+                setIsRead(item, holder.title_slides);
+                setIsRead(item, holder.source_slides);
+                setIsRead(item, holder.comment_num_slides);
+                //删除图标点击事件
+                holder.img_del_slides.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if(list.size() >= 2) {
+                            list.remove(position);
+                            notifyDataSetChanged();
+                        }
+                        Toast.makeText(mContext,"删除此条",Toast.LENGTH_SHORT).show();
                     }
-                    Toast.makeText(mContext,"删除此条",Toast.LENGTH_SHORT).show();
-                }
-            });
-            MimageLoader.build(mContext).setBitmap(item.getThumbnail(),holder.img_phvideo);
-            holder.comment_num_phvideo.setText(item.getComments());
-            holder.source_phvideo.setText(item.getSource() + item.getUpdateTime());
-            holder.title_phvideo.setText(item.getTitle());
+                });
+            }
+            if (holder.viewType == TYPE_PHVIDEO) {
+                MimageLoader.build(mContext).setImagePlace(R.mipmap.ic_launcher).setBitmap(item.getThumbnail(), holder.img_phvideo);
+                holder.comment_num_phvideo.setText(item.getComments());
+                holder.source_phvideo.setText(item.getSource() + item.getUpdateTime());
+                holder.title_phvideo.setText(item.getTitle());
+                setIsRead(item, holder.comment_num_phvideo);
+                setIsRead(item, holder.source_phvideo);
+                setIsRead(item, holder.title_phvideo);
+                //删除图标点击事件
+                holder.img_del_phvideo.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if(list.size() >= 2) {
+                            list.remove(position);
+                            notifyDataSetChanged();
+                        }
+                        Toast.makeText(mContext,"删除此条",Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+            if (holder.viewType == TYPE_FOOTER) {
+                holder.mProgressBar.setVisibility(View.VISIBLE);
+            }
+            if(holder.viewType != TYPE_FOOTER) {
+                final Item i = list.get(position);
+                //item的点击事件，在MainActivity中更改isRead，在这里刷新recycler
+                holder.itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        callBack.onClick(i);
+                        if (holder.viewType == TYPE_SLIDES){
+                            holder.title_slides.setTextColor(Color.parseColor("#BFBFBF"));
+                            holder.comment_num_slides.setTextColor(Color.parseColor("#BFBFBF"));
+                            holder.source_slides.setTextColor(Color.parseColor("#BFBFBF"));
+                        }
+                        if(holder.viewType == TYPE_NORMAL && position != 0){
+                            holder.title_doc.setTextColor(Color.parseColor("#BFBFBF"));
+                            holder.comment_num_doc.setTextColor(Color.parseColor("#BFBFBF"));
+                            holder.source_doc.setTextColor(Color.parseColor("#BFBFBF"));
+                        }
+                        if (holder.viewType == TYPE_PHVIDEO){
+                            holder.title_phvideo.setTextColor(Color.parseColor("#BFBFBF"));
+                            holder.comment_num_phvideo.setTextColor(Color.parseColor("#BFBFBF"));
+                            holder.source_phvideo.setTextColor(Color.parseColor("#BFBFBF"));
+                        }
+                    }
+                });
 
-        }
-        if(holder.viewType == TYPE_FOOTER){
-            holder.mProgressBar.setVisibility(View.VISIBLE);
+            }
         }
     }
     @Override
@@ -214,6 +237,15 @@ public class recycler extends RecyclerView.Adapter<recycler.mViewHolder> {
             img_phvideo = (ImageView)itemView.findViewById(R.id.item_img_phvideo);
             img_del_phvideo = (ImageView)itemView.findViewById(R.id.item_del_phvideo);
 
+        }
+    }
+
+    private void setIsRead(Item item,TextView textView){
+        if(item.getIsRead() == 1){
+            textView.setTextColor(Color.parseColor("#BFBFBF"));
+        }
+        else {
+            textView.setTextColor(Color.parseColor("#000000"));
         }
     }
 }

@@ -27,7 +27,7 @@ public class SQUtils {
 
     public SQUtils(Context context){
         mContext = context;
-        dataBaseHelper = new MyDataBaseHelper(context,"News.db",null,1);
+        dataBaseHelper = new MyDataBaseHelper(context,"News.db",null,3);
         db = dataBaseHelper.getWritableDatabase();
         Log.d(TAG,"创建数据库成功");
     }
@@ -55,6 +55,7 @@ public class SQUtils {
                 values.put("type", itemList.get(i).getLink().getType());
                 values.put("url", itemList.get(i).getLink().getUrl());
                 values.put("comments", itemList.get(i).getComments());
+                values.put("isRead",0);//默认保存没有读过
 
                 db.insert("News", null, values);
                 values.clear();
@@ -73,10 +74,13 @@ public class SQUtils {
     }
 
     /**
-     * 更新方法
+     * 更新是否阅读的状态
+     * @param title 传入标题
      */
-    public void update(){
-        //此方法暂时无用
+    public void isRead(String title){
+        ContentValues values = new ContentValues();
+        values.put("isRead",1);
+        db.update("News",values,"title = ?",new String[]{title});
     }
     public boolean query(String obj){
         Cursor cursor = db.query("News",null,null,null,null,null,null);
@@ -108,6 +112,7 @@ public class SQUtils {
                 "commentsUrl text," +
                 "comments text," +
                 "type text," +
+                "isRead integer," +//0为false，1为true
                 "url text)";
 
         Context mContext;

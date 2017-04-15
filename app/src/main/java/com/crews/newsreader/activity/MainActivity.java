@@ -146,6 +146,8 @@ public class MainActivity extends AppCompatActivity {
                             item.setComments(cursor.getString(cursor.getColumnIndex("comments")));
                             item.setThumbnail(cursor.getString(cursor.getColumnIndex("thumbnail")));
                             item.setTitle(cursor.getString(cursor.getColumnIndex("title")));
+                            item.setIsRead((cursor.getInt(cursor.getColumnIndex("isRead"))));
+
                             itemList.add(item);
                             //Log.d(TAG,item.getUpdateTime());
                         }while (cursor.moveToNext());
@@ -223,10 +225,11 @@ public class MainActivity extends AppCompatActivity {
                 Data data = gsonData(response);
                 //加载到集合
                 itemList.addAll(data.getItem());
+                relist();//去除广告
                 //从网络中获取数据之后加载到数据库
                 insertSQL();
                 showLog();
-                relist();//去除广告
+
                 //刷新recycler
                 runOnUiThread(new Runnable() {
                     @Override
@@ -286,6 +289,7 @@ public class MainActivity extends AppCompatActivity {
         //传递这个新闻的类
         intent.putExtra("new", item);
         startActivity(intent);
+        //sqUtil.isRead(item.getTitle());
     }
 
     private void relist(){
