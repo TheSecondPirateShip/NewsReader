@@ -40,20 +40,20 @@
                 android:singleLine="true"
                 android:maxLength="12"
                 android:imeOptions="actionSearch"
-                android:hint="  搜索一下你感兴趣的吧" />
+                android:hint="搜索一下你感兴趣的吧" />
 
         </LinearLayout>
 
     </android.support.v7.widget.Toolbar>
-<android.support.v4.widget.SwipeRefreshLayout
-    android:layout_width="match_parent"
-    android:id="@+id/swipe_refresh"
-    android:layout_height="match_parent">
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        />
-</android.support.v4.widget.SwipeRefreshLayout>
+        android:layout_height="match_parent" />
+
+    <android.support.v4.widget.SwipeRefreshLayout
+    android:layout_width="match_parent"
+    android:id="@+id/swipe_refresh"
+    android:layout_height="match_parent"></android.support.v4.widget.SwipeRefreshLayout>
 
 </LinearLayout>

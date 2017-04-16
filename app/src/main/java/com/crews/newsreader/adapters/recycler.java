@@ -2,11 +2,16 @@ package com.crews.newsreader.adapters;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -34,6 +39,7 @@ public class recycler extends RecyclerView.Adapter<recycler.mViewHolder> {
     private CallBack callBack = null;
     private List<Item> list = new ArrayList<>();
     private Context mContext = null;
+    private PopupWindow popupWindow;
 
     public recycler(CallBack callBack){
         this.callBack = callBack;
@@ -84,11 +90,9 @@ public class recycler extends RecyclerView.Adapter<recycler.mViewHolder> {
                 holder.img_del_doc.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        if(list.size() >= 2) {
-                            list.remove(position);
-                            notifyDataSetChanged();
-                        }
-                        Toast.makeText(mContext,"删除此条",Toast.LENGTH_SHORT).show();
+                        initPopupWindow(view,position);
+                        Animation animation = AnimationUtils.loadAnimation(mContext,R.anim.alpha_out);
+
                     }
                 });
             }
@@ -106,11 +110,7 @@ public class recycler extends RecyclerView.Adapter<recycler.mViewHolder> {
                 holder.img_del_slides.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        if(list.size() >= 2) {
-                            list.remove(position);
-                            notifyDataSetChanged();
-                        }
-                        Toast.makeText(mContext,"删除此条",Toast.LENGTH_SHORT).show();
+                        initPopupWindow(view , position);
                     }
                 });
             }
@@ -126,11 +126,8 @@ public class recycler extends RecyclerView.Adapter<recycler.mViewHolder> {
                 holder.img_del_phvideo.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        if(list.size() >= 2) {
-                            list.remove(position);
-                            notifyDataSetChanged();
-                        }
-                        Toast.makeText(mContext,"删除此条",Toast.LENGTH_SHORT).show();
+                        initPopupWindow(view , position);
+
                     }
                 });
             }
@@ -169,7 +166,7 @@ public class recycler extends RecyclerView.Adapter<recycler.mViewHolder> {
     public int getItemViewType(int position) {
         if(position + 1 == getItemCount()){
             return TYPE_FOOTER;
-        }else if (list.get(position).getLink().getType().equals("slides")) {
+        }else if (list.get(position).getLink().getType().equals("slide")) {
             return TYPE_SLIDES;
         }else if (list.get(position).getLink().getType().equals("phvideo")) {
             return TYPE_PHVIDEO;
@@ -247,5 +244,42 @@ public class recycler extends RecyclerView.Adapter<recycler.mViewHolder> {
         else {
             textView.setTextColor(Color.parseColor("#000000"));
         }
+    }
+
+    private void initPopupWindow(View view , int position) {
+        if(popupWindow == null){
+            View popupView = LayoutInflater.from(mContext).inflate(R.layout.remove_pop,null);
+            // 三部曲第二  构造函数关联
+            popupWindow = new PopupWindow(popupView, ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT,true);
+            initClick(popupView , position);
+
+        }
+        // =======  两者结合才能让popup点击外部消失
+        popupWindow.setOutsideTouchable(true);
+        popupWindow.setBackgroundDrawable(new BitmapDrawable());
+        // =======  两者结合才能让popup点击外部消失
+        // 让popup占有优先于activity的交互响应能力，不单单是焦点问题。
+        popupWindow.setFocusable(true);
+        // 设置动画  这里选用系统提供的
+        popupWindow.setAnimationStyle(android.R.style.Animation_InputMethod);
+        // popup和软键盘的关系
+        // 三部曲第三   展示popup
+        popupWindow.showAsDropDown(view,-280,-170);
+
+    }
+
+    private void initClick(View popupView ,final int position){
+        Button button = (Button)popupView.findViewById(R.id.btn_popup);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(list.size() >= 2) {
+                    list.remove(position);
+                    notifyItemRemoved(position);
+                }
+                Toast.makeText(mContext,"删除此条",Toast.LENGTH_SHORT).show();
+                popupWindow.dismiss();
+            }
+        });
     }
 }

@@ -8,16 +8,6 @@
     android:orientation="vertical"
     tools:context="com.crews.newsreader.activity.content.SlideActivity">
 
-    <TextView
-        android:id="@+id/source_content_slide"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="right"
-        android:paddingRight="20dp"
-        android:paddingTop="10dp"
-        android:text="新闻来源"
-        android:textColor="#ffff" />
-
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -35,6 +25,7 @@
     </RelativeLayout>
 
     <LinearLayout
+        android:id="@+id/slide_tx"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="#8d000000"
@@ -96,4 +87,16 @@
                 android:textColor="#ffff" />
         </LinearLayout>
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/source_content_slide"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#8d000000"
+        android:gravity="right"
+        android:paddingBottom="10dp"
+        android:paddingRight="20dp"
+        android:paddingTop="10dp"
+        android:text="新闻来源"
+        android:textColor="#ffff" />
 </FrameLayout>

@@ -8,7 +8,10 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.crews.newsreader.R;
@@ -38,6 +41,10 @@ public class SlideActivity extends AppCompatActivity {
     private TextView page_total;
     private List<View> viewList = new ArrayList<>();
     private List<Slides> list = new ArrayList<>();
+    private Animation alpha_out;
+    private Animation alpha_in;
+    private boolean isImgClick = true ;
+    private LinearLayout linearLayout;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,9 +62,10 @@ public class SlideActivity extends AppCompatActivity {
         mSource = (TextView) findViewById(R.id.source_content_slide);
         page = (TextView) findViewById(R.id.page_slide);
         page_total = (TextView) findViewById(R.id.page_total_slide);
-
         description = (TextView) findViewById(R.id.description);
-
+        linearLayout = (LinearLayout)findViewById(R.id.slide_tx);
+        alpha_out = AnimationUtils.loadAnimation(SlideActivity.this,R.anim.alpha_out);
+        alpha_in = AnimationUtils.loadAnimation(SlideActivity.this,R.anim.alpha_in);
     }
 
 
@@ -67,41 +75,30 @@ public class SlideActivity extends AppCompatActivity {
             public void onFinish(String response) {
                 list = gsonContent(response).getBody().getSlides();
                 source = gsonContent(response).getBody().getSource();
-
                 for (Slides slides : list){
                     Log.d("456456", "onCreate: "+slides.getImage());
                     View view = getLayoutInflater().from(SlideActivity.this).inflate(R.layout.pager_img,null);
                     ImageView imageView = (ImageView) view.findViewById(R.id.pager_img);
                     MimageLoader.build(SlideActivity.this).setBitmap(slides.getImage(),imageView);
+                    view.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Log.d("000", "onClick: 单击图片");
+                            if (isImgClick) {
+                                linearLayout.startAnimation(alpha_out);
+                                isImgClick = false;
+                            }else {
+                                linearLayout.startAnimation(alpha_in);
+                                isImgClick = true;
+                            }
+                        }
+                    });
                     viewList.add(view);
                 }
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-
-                        viewPager.setAdapter(pagerAdapter);
-//                        String s = list.size()+"";
-                        page_total.setText("/" + list.size());
-                        mSource.setText(source);
-                        description.setText(list.get(0).getDescription());
-                        title.setText(list.get(0).getTitle());
-                        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-                            @Override
-                            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                            }
-
-                            @Override
-                            public void onPageSelected(int position) {
-                                page.setText(position+1+"");
-                                title.setText(list.get(position).getTitle());
-                                description.setText(list.get(position).getDescription());
-                            }
-
-                            @Override
-                            public void onPageScrollStateChanged(int state) {
-
-                            }
-                        });
+                        setViewPager();
                     }
                 });
             }
@@ -119,6 +116,37 @@ public class SlideActivity extends AppCompatActivity {
         mItem = (Item)intent.getSerializableExtra("new");
         url = mItem.getLink().getUrl();
     }
+
+    private void setViewPager(){
+        viewPager.setAdapter(pagerAdapter);
+//                        String s = list.size()+"";
+        page_total.setText("/" + list.size());
+        mSource.setText(source);
+        description.setText(list.get(0).getDescription());
+        title.setText(list.get(0).getTitle());
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                page.setText(position+1+"");
+                title.setText(list.get(position).getTitle());
+                description.setText(list.get(position).getDescription());
+                if (isImgClick == false){
+                    linearLayout.startAnimation(alpha_in);
+                    isImgClick = true;
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
+    }
+
     PagerAdapter pagerAdapter = new PagerAdapter() {
         @Override
         public int getCount() {
