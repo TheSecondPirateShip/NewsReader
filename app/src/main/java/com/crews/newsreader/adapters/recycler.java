@@ -18,7 +18,6 @@ import android.widget.Toast;
 
 
 import com.crews.newsreader.R;
-import com.crews.newsreader.activity.MainActivity;
 import com.crews.newsreader.beans.Main.Item;
 
 import java.util.ArrayList;
@@ -80,7 +79,7 @@ public class recycler extends RecyclerView.Adapter<recycler.mViewHolder> {
             if (holder.viewType == TYPE_NORMAL) {
                 String s = item.getTitle();
                 holder.title_doc.setText(s);
-                MimageLoader.build(mContext).setImagePlace(R.mipmap.ic_launcher).setBitmap(item.getThumbnail(), holder.img_doc);
+                MimageLoader.build(mContext).setImagePlace(R.mipmap.ic_launcher).setImageError(R.drawable.erroricon).setBitmap(item.getThumbnail(), holder.img_doc);
                 holder.source_doc.setText(item.getSource() + " " + item.getUpdateTime());
                 holder.comment_num_doc.setText(item.getComments());
                 setIsRead(item, holder.title_doc);
@@ -97,9 +96,9 @@ public class recycler extends RecyclerView.Adapter<recycler.mViewHolder> {
                 });
             }
             if (holder.viewType == TYPE_SLIDES) {
-                MimageLoader.build(mContext).setImagePlace(R.mipmap.ic_launcher).setBitmap(item.getStyle().getImages().get(0), holder.img_slides1);
-                MimageLoader.build(mContext).setImagePlace(R.mipmap.ic_launcher).setBitmap(item.getStyle().getImages().get(1), holder.img_slides2);
-                MimageLoader.build(mContext).setImagePlace(R.mipmap.ic_launcher).setBitmap(item.getStyle().getImages().get(2), holder.img_slides3);
+                MimageLoader.build(mContext).setImagePlace(R.mipmap.ic_launcher).setImageError(R.drawable.erroricon).setBitmap(item.getStyle().getImages().get(0), holder.img_slides1);
+                MimageLoader.build(mContext).setImagePlace(R.mipmap.ic_launcher).setImageError(R.drawable.erroricon).setBitmap(item.getStyle().getImages().get(1), holder.img_slides2);
+                MimageLoader.build(mContext).setImagePlace(R.mipmap.ic_launcher).setImageError(R.drawable.erroricon).setBitmap(item.getStyle().getImages().get(2), holder.img_slides3);
                 holder.source_slides.setText(item.getSource() + "  " + item.getUpdateTime());
                 holder.title_slides.setText(item.getTitle());
                 holder.comment_num_slides.setText(item.getComments());
@@ -115,7 +114,7 @@ public class recycler extends RecyclerView.Adapter<recycler.mViewHolder> {
                 });
             }
             if (holder.viewType == TYPE_PHVIDEO) {
-                MimageLoader.build(mContext).setImagePlace(R.mipmap.ic_launcher).setBitmap(item.getThumbnail(), holder.img_phvideo);
+                MimageLoader.build(mContext).setImagePlace(R.mipmap.ic_launcher).setImageError(R.drawable.erroricon).setBitmap(item.getThumbnail(), holder.img_phvideo);
                 holder.comment_num_phvideo.setText(item.getComments());
                 holder.source_phvideo.setText(item.getSource() +""+ item.getUpdateTime());
                 holder.title_phvideo.setText(item.getTitle());

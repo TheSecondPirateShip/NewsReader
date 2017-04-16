@@ -88,7 +88,10 @@ public class MimageLoader {
             }
         }
     };
+    //正在加载的图片
     private static int imagePlaceID = -1;
+    //图片链接为空时使用的图片
+    private static int imageErrorID = -1;
     private Context mContext;
     //设置缓存倍数，1/MULTIPLE
     private static int MULTIPLE = 8;
@@ -234,6 +237,12 @@ public class MimageLoader {
      * @param imageview
      */
     public void setBitmap(final String url, final ImageView imageview) {
+        if(url == null) {
+            if(imageErrorID != -1){
+                imageview.setImageResource(imageErrorID);
+            }
+            return;
+        }
         if(imagePlaceID != -1){
             imageview.setImageResource(imagePlaceID);
         }
@@ -374,6 +383,11 @@ public class MimageLoader {
 
     public MimageLoader setImagePlace(int id){
         imagePlaceID = id;
+        return this;
+    }
+
+    public MimageLoader setImageError(int id){
+        imageErrorID = id;
         return this;
     }
 
