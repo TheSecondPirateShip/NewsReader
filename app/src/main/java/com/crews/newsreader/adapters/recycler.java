@@ -71,8 +71,8 @@ public class recycler extends RecyclerView.Adapter<recycler.mViewHolder> {
             item = list.get(position);
         }
         if(item != null) {
-            if (holder.viewType == TYPE_NORMAL && position != 0) {
-                String s = item.getLink().getType() + ": " + item.getTitle();
+            if (holder.viewType == TYPE_NORMAL) {
+                String s = item.getTitle();
                 holder.title_doc.setText(s);
                 MimageLoader.build(mContext).setImagePlace(R.mipmap.ic_launcher).setBitmap(item.getThumbnail(), holder.img_doc);
                 holder.source_doc.setText(item.getSource() + " " + item.getUpdateTime());
@@ -117,7 +117,7 @@ public class recycler extends RecyclerView.Adapter<recycler.mViewHolder> {
             if (holder.viewType == TYPE_PHVIDEO) {
                 MimageLoader.build(mContext).setImagePlace(R.mipmap.ic_launcher).setBitmap(item.getThumbnail(), holder.img_phvideo);
                 holder.comment_num_phvideo.setText(item.getComments());
-                holder.source_phvideo.setText(item.getSource() + item.getUpdateTime());
+                holder.source_phvideo.setText(item.getSource() +""+ item.getUpdateTime());
                 holder.title_phvideo.setText(item.getTitle());
                 setIsRead(item, holder.comment_num_phvideo);
                 setIsRead(item, holder.source_phvideo);
@@ -149,7 +149,7 @@ public class recycler extends RecyclerView.Adapter<recycler.mViewHolder> {
                             holder.comment_num_slides.setTextColor(Color.parseColor("#BFBFBF"));
                             holder.source_slides.setTextColor(Color.parseColor("#BFBFBF"));
                         }
-                        if(holder.viewType == TYPE_NORMAL && position != 0){
+                        if(holder.viewType == TYPE_NORMAL){
                             holder.title_doc.setTextColor(Color.parseColor("#BFBFBF"));
                             holder.comment_num_doc.setTextColor(Color.parseColor("#BFBFBF"));
                             holder.source_doc.setTextColor(Color.parseColor("#BFBFBF"));

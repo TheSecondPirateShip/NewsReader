@@ -80,6 +80,7 @@ public class DocActivity extends AppCompatActivity {
                             public void run() {
                                 header.setText(title);
                                 content.setText(spanned);
+                                content.setLinksClickable(true);
                             }
                         });
                     }
