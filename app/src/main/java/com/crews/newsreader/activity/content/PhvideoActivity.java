@@ -16,12 +16,12 @@ public class PhvideoActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_phvideo);
-        try {
+        /*try {
             Thread thread = Thread.currentThread();
             thread.sleep(1500);
         } catch (InterruptedException e) {
             e.printStackTrace();
-        }
+        }*/
         init();
     }
 

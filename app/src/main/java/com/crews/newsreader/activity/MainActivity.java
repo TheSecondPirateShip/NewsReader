@@ -133,8 +133,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void run() {
                     Cursor cursor = sqUtil.getDb().query("News", null, null, null, null, null, null);
-                    if (cursor != null && cursor.moveToFirst()) {
-                        Log.d(TAG,"cursor.moveToFirst()");
+                    if (cursor != null && cursor.moveToLast()) {
+                        Log.d(TAG,"cursor.moveToLast()");
                         do{
                             Item item = new Item();
                             item.setUpdateTime(cursor.getString(cursor.getColumnIndex("date")));
@@ -150,7 +150,7 @@ public class MainActivity extends AppCompatActivity {
 
                             itemList.add(item);
                             //Log.d(TAG,item.getUpdateTime());
-                        }while (cursor.moveToNext());
+                        }while (cursor.moveToPrevious());
                         cursor.close();
                         if(itemList != null){
                             //实在不会写回调  用hanlder
@@ -223,6 +223,10 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onFinish(String response) {
                 Data data = gsonData(response);
+                //之前遇到过的，在ChinaNet等没登录时得到登录的response，item=null,报错。防止这种情况
+                if(data.getItem() == null){
+                    Toast.makeText(MainActivity.this, "网络好像有问题..", Toast.LENGTH_SHORT).show();
+                }
                 //加载到集合
                 itemList.addAll(data.getItem());
                 relist();//去除广告

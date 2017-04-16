@@ -86,12 +86,12 @@ public class DocActivity extends AppCompatActivity {
                 });
             }
         });
-        try {
+        /*try {
             Thread thread = Thread.currentThread();
             thread.sleep(3000);
         } catch (InterruptedException e) {
             e.printStackTrace();
-        }
+        }*/
         Toast.makeText(DocActivity.this,"双击返回",Toast.LENGTH_SHORT).show();
 
     }
@@ -103,7 +103,7 @@ public class DocActivity extends AppCompatActivity {
 
     private void getHTML(final Call call) {
         //final float width = this.getWindowManager().getDefaultDisplay().getWidth();
-        final float width = content.getWidth()*(float)0.8;
+        final float width = content.getWidth()*(float)0.85;
         new Thread(new Runnable() {
             @Override
             public void run() {
