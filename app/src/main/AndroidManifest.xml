@@ -19,7 +19,8 @@
         </activity>
         <activity android:name=".activity.content.DocActivity" />
         <activity android:name=".activity.content.SlideActivity" />
-        <activity android:name=".activity.content.PhvideoActivity"></activity>
+        <activity android:name=".activity.content.PhvideoActivity" />
+        <activity android:name=".activity.content.DocImage"></activity>
     </application>
 
 </manifest>

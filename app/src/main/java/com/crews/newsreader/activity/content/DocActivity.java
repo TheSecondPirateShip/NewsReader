@@ -13,13 +13,13 @@ import android.os.Bundle;
 import android.text.Html;
 import android.text.Spanned;
 import android.util.Log;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.TextView;
-import android.widget.Toast;
-
 import com.crews.newsreader.R;
 import com.crews.newsreader.adapters.MimageLoader;
 import com.crews.newsreader.beans.Content.Body;
@@ -28,8 +28,11 @@ import com.crews.newsreader.beans.Main.Item;
 import com.crews.newsreader.utils.HttpUtil;
 import com.crews.newsreader.utils.ImgAdapter;
 import com.google.gson.Gson;
+import java.util.ArrayList;
+import java.util.List;
 
 public class DocActivity extends AppCompatActivity {
+
     private interface Call{
         void onFinish(Spanned spanned);
     }
@@ -38,8 +41,8 @@ public class DocActivity extends AppCompatActivity {
     private String text = null;
     private String title = null;
     private TextView header, content;
-    private long firstTime;
-
+    private List<String> imgList;
+    private GestureDetector mDetector;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +56,20 @@ public class DocActivity extends AppCompatActivity {
         getFromHttp();
     }
 
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        return mDetector.onTouchEvent(event);
+    }
+
+    //Gesture与scrollView不兼容问题解决
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        //先让GestureDetector响应触碰事件
+        mDetector.onTouchEvent(ev);
+        //让Activity响应触碰事件
+        super.dispatchTouchEvent(ev);
+        return false;
+    }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     private void setToolBar(){
@@ -81,19 +98,10 @@ public class DocActivity extends AppCompatActivity {
     }
 
     private void bind() {
+        imgList = new ArrayList<>();
         header = (TextView) findViewById(R.id.doc_header);
         content = (TextView) findViewById(R.id.doc_content);
-        content.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                long secondTime = System.currentTimeMillis();
-                if (secondTime -  firstTime > 300) {
-                    firstTime = secondTime;
-                } else {
-                    onBackPressed();
-                }
-            }
-        });
+        mDetector = new GestureDetector(getApplicationContext(),new MyGestureListener(DocActivity.this,imgList));
     }
 
     private void getFromHttp() {
@@ -118,14 +126,6 @@ public class DocActivity extends AppCompatActivity {
                 });
             }
         });
-        /*try {
-            Thread thread = Thread.currentThread();
-            thread.sleep(3000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }*/
-        Toast.makeText(DocActivity.this,"双击返回",Toast.LENGTH_SHORT).show();
-
     }
 
     private Content gsonContent(String response) {
@@ -134,7 +134,6 @@ public class DocActivity extends AppCompatActivity {
     }
 
     private void getHTML(final Call call) {
-        //final float width = this.getWindowManager().getDefaultDisplay().getWidth();
         final float width = content.getWidth()*(float)0.85;
         new Thread(new Runnable() {
             @Override
@@ -145,6 +144,7 @@ public class DocActivity extends AppCompatActivity {
                 Spanned sp = Html.fromHtml(text, new Html.ImageGetter() {
                     @Override
                     public Drawable getDrawable(String source) {
+                        imgList.add(source);
                         //计算宽和高来自适应屏幕
                         Bitmap bitmap = MimageLoader.build(DocActivity.this).loadBitmapFromHttp(source, 0, 0);
                         Drawable d = new BitmapDrawable(bitmap);
@@ -157,4 +157,5 @@ public class DocActivity extends AppCompatActivity {
             }
         }).start();
     }
+
 }

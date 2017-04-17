@@ -26,10 +26,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SlideActivity extends AppCompatActivity {
-    /**
-     * 问题：目前使用scrollview嵌套recyclerView
-     * 解决：用header
-     */
     private Item mItem;
     private ViewPager viewPager;
     private String url;
@@ -51,7 +47,6 @@ public class SlideActivity extends AppCompatActivity {
         setContentView(R.layout.activity_slide);
         bind();
         init();
-
         getFromHttp();
 
     }
