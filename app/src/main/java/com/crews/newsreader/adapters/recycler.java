@@ -97,9 +97,11 @@ public class recycler extends RecyclerView.Adapter<recycler.mViewHolder> {
                 });
             }
             if (holder.viewType == TYPE_SLIDES) {
-                MimageLoader.build(mContext).setImagePlace(R.mipmap.ic_launcher).setImageError(R.drawable.erroricon).setBitmap(item.getStyle().getImages().get(0), holder.img_slides1);
-                MimageLoader.build(mContext).setImagePlace(R.mipmap.ic_launcher).setImageError(R.drawable.erroricon).setBitmap(item.getStyle().getImages().get(1), holder.img_slides2);
-                MimageLoader.build(mContext).setImagePlace(R.mipmap.ic_launcher).setImageError(R.drawable.erroricon).setBitmap(item.getStyle().getImages().get(2), holder.img_slides3);
+                if(item.getStyle() != null) {
+                    MimageLoader.build(mContext).setImagePlace(R.mipmap.ic_launcher).setImageError(R.drawable.erroricon).setBitmap(item.getStyle().getImages().get(0), holder.img_slides1);
+                    MimageLoader.build(mContext).setImagePlace(R.mipmap.ic_launcher).setImageError(R.drawable.erroricon).setBitmap(item.getStyle().getImages().get(1), holder.img_slides2);
+                    MimageLoader.build(mContext).setImagePlace(R.mipmap.ic_launcher).setImageError(R.drawable.erroricon).setBitmap(item.getStyle().getImages().get(2), holder.img_slides3);
+                }
                 holder.source_slides.setText(item.getSource() + "  " + item.getUpdateTime());
                 holder.title_slides.setText(item.getTitle());
                 holder.comment_num_slides.setText(item.getComments());

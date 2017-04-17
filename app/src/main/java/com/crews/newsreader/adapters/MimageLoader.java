@@ -27,7 +27,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -88,6 +87,8 @@ public class MimageLoader {
             }
         }
     };
+    //计时
+    private static long firsttime;
     //正在加载的图片
     private static int imagePlaceID = -1;
     //图片链接为空时使用的图片
@@ -173,8 +174,6 @@ public class MimageLoader {
                 inputStream.close();
                 urlConnection.disconnect();
             }
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -237,6 +236,7 @@ public class MimageLoader {
      * @param imageview
      */
     public void setBitmap(final String url, final ImageView imageview) {
+        firsttime = System.currentTimeMillis();
         if(url == null) {
             if(imageErrorID != -1){
                 imageview.setImageResource(imageErrorID);

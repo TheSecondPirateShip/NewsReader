@@ -302,7 +302,7 @@ public class MainActivity extends AppCompatActivity {
         //传递这个新闻的类
         intent.putExtra("new", item);
         startActivity(intent);
-        //sqUtil.isRead(item.getTitle());
+        sqUtil.isRead(item.getTitle());
     }
 
     private void relist(){
