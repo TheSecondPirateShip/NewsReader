@@ -70,7 +70,7 @@
             android:id="@+id/item_source_slides"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="5"
+            android:layout_weight="10"
             android:text="来源+时间"
             android:textColor="#BDC7D8"
             android:textSize="10sp" />
