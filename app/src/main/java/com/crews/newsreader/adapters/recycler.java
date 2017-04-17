@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,9 +29,10 @@ import java.util.List;
  */
 
 public class recycler extends RecyclerView.Adapter<recycler.mViewHolder> {
-    public interface CallBack{
+    public interface CallBack {
         void onClick(Item item);
     }
+
     public static final int TYPE_FOOTER = 0;
     public static final int TYPE_NORMAL = 1;
     public static final int TYPE_SLIDES = 2;
@@ -40,42 +42,42 @@ public class recycler extends RecyclerView.Adapter<recycler.mViewHolder> {
     private Context mContext = null;
     private PopupWindow popupWindow;
 
-    public recycler(CallBack callBack){
+    public recycler(CallBack callBack) {
         this.callBack = callBack;
     }
 
-    public void refresh(List<Item> list){
+    public void refresh(List<Item> list) {
         this.list = list;
         notifyDataSetChanged();
     }
 
     @Override
     public mViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        if(mContext == null){
+        if (mContext == null) {
             mContext = parent.getContext();
         }
-        if(viewType == TYPE_FOOTER) {
+        if (viewType == TYPE_FOOTER) {
             View view = LayoutInflater.from(mContext).inflate(R.layout.recycler_load_more_layout, parent, false);
-            return new mViewHolder(view,TYPE_FOOTER);
-        }else if (viewType == TYPE_SLIDES){
-            View view = LayoutInflater.from(mContext).inflate(R.layout.item_slides,parent,false);
-            return new mViewHolder(view,TYPE_SLIDES);
-        }else if (viewType == TYPE_PHVIDEO){
-            View view = LayoutInflater.from(mContext).inflate(R.layout.item_phvideo,parent,false);
-            return new mViewHolder(view,TYPE_PHVIDEO);
-        }else {
+            return new mViewHolder(view, TYPE_FOOTER);
+        } else if (viewType == TYPE_SLIDES) {
+            View view = LayoutInflater.from(mContext).inflate(R.layout.item_slides, parent, false);
+            return new mViewHolder(view, TYPE_SLIDES);
+        } else if (viewType == TYPE_PHVIDEO) {
+            View view = LayoutInflater.from(mContext).inflate(R.layout.item_phvideo, parent, false);
+            return new mViewHolder(view, TYPE_PHVIDEO);
+        } else {
             View view = LayoutInflater.from(mContext).inflate(R.layout.item_main, parent, false);
-            return new mViewHolder(view,TYPE_NORMAL);
+            return new mViewHolder(view, TYPE_NORMAL);
         }
     }
 
     @Override
     public void onBindViewHolder(final mViewHolder holder, final int position) {
         Item item = null;
-        if(list.size()>position) {
+        if (list.size() > position) {
             item = list.get(position);
         }
-        if(item != null) {
+        if (item != null) {
             if (holder.viewType == TYPE_NORMAL) {
                 String s = item.getTitle();
                 holder.title_doc.setText(s);
@@ -89,8 +91,7 @@ public class recycler extends RecyclerView.Adapter<recycler.mViewHolder> {
                 holder.img_del_doc.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        initPopupWindow(view,position);
-                        Animation animation = AnimationUtils.loadAnimation(mContext,R.anim.alpha_out);
+                        initPopupWindow(view, position);
 
                     }
                 });
@@ -109,14 +110,14 @@ public class recycler extends RecyclerView.Adapter<recycler.mViewHolder> {
                 holder.img_del_slides.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        initPopupWindow(view , position);
+                        initPopupWindow(view, position);
                     }
                 });
             }
             if (holder.viewType == TYPE_PHVIDEO) {
                 MimageLoader.build(mContext).setImagePlace(R.mipmap.ic_launcher).setImageError(R.drawable.erroricon).setBitmap(item.getThumbnail(), holder.img_phvideo);
                 holder.comment_num_phvideo.setText(item.getComments());
-                holder.source_phvideo.setText(item.getSource() +""+ item.getUpdateTime());
+                holder.source_phvideo.setText(item.getSource() + "" + item.getUpdateTime());
                 holder.title_phvideo.setText(item.getTitle());
                 setIsRead(item, holder.comment_num_phvideo);
                 setIsRead(item, holder.source_phvideo);
@@ -125,7 +126,7 @@ public class recycler extends RecyclerView.Adapter<recycler.mViewHolder> {
                 holder.img_del_phvideo.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        initPopupWindow(view , position);
+                        initPopupWindow(view, position);
 
                     }
                 });
@@ -133,24 +134,24 @@ public class recycler extends RecyclerView.Adapter<recycler.mViewHolder> {
             if (holder.viewType == TYPE_FOOTER) {
                 holder.mProgressBar.setVisibility(View.VISIBLE);
             }
-            if(holder.viewType != TYPE_FOOTER) {
+            if (holder.viewType != TYPE_FOOTER) {
                 final Item i = list.get(position);
                 //item的点击事件，在MainActivity中更改isRead，在这里刷新recycler
                 holder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         callBack.onClick(i);
-                        if (holder.viewType == TYPE_SLIDES){
+                        if (holder.viewType == TYPE_SLIDES) {
                             holder.title_slides.setTextColor(Color.parseColor("#BFBFBF"));
                             holder.comment_num_slides.setTextColor(Color.parseColor("#BFBFBF"));
                             holder.source_slides.setTextColor(Color.parseColor("#BFBFBF"));
                         }
-                        if(holder.viewType == TYPE_NORMAL){
+                        if (holder.viewType == TYPE_NORMAL) {
                             holder.title_doc.setTextColor(Color.parseColor("#BFBFBF"));
                             holder.comment_num_doc.setTextColor(Color.parseColor("#BFBFBF"));
                             holder.source_doc.setTextColor(Color.parseColor("#BFBFBF"));
                         }
-                        if (holder.viewType == TYPE_PHVIDEO){
+                        if (holder.viewType == TYPE_PHVIDEO) {
                             holder.title_phvideo.setTextColor(Color.parseColor("#BFBFBF"));
                             holder.comment_num_phvideo.setTextColor(Color.parseColor("#BFBFBF"));
                             holder.source_phvideo.setTextColor(Color.parseColor("#BFBFBF"));
@@ -161,18 +162,20 @@ public class recycler extends RecyclerView.Adapter<recycler.mViewHolder> {
             }
         }
     }
+
     @Override
     public int getItemViewType(int position) {
-        if(position + 1 == getItemCount()){
+        if (position + 1 == getItemCount()) {
             return TYPE_FOOTER;
-        }else if (list.get(position).getLink().getType().equals("slide")) {
+        } else if (list.get(position).getLink().getType().equals("slide")) {
             return TYPE_SLIDES;
-        }else if (list.get(position).getLink().getType().equals("phvideo")) {
+        } else if (list.get(position).getLink().getType().equals("phvideo")) {
             return TYPE_PHVIDEO;
-        }else {
+        } else {
             return TYPE_NORMAL;
         }
     }
+
     @Override
     public int getItemCount() {
         return list.size() + 1;
@@ -180,6 +183,7 @@ public class recycler extends RecyclerView.Adapter<recycler.mViewHolder> {
 
     /**
      * 上拉加载时把数据添加在下面
+     *
      * @param newDatas
      */
     public void addMoreItemBottom(List<Item> newDatas) {
@@ -189,9 +193,10 @@ public class recycler extends RecyclerView.Adapter<recycler.mViewHolder> {
 
     /**
      * 下拉加载时把数据添加在上面
+     *
      * @param newDatas
      */
-    public void addMoreItemTop(List<Item> newDatas){
+    public void addMoreItemTop(List<Item> newDatas) {
         List<Item> temp = new ArrayList<>();
         temp.addAll(newDatas);
         temp.addAll(list);
@@ -200,21 +205,22 @@ public class recycler extends RecyclerView.Adapter<recycler.mViewHolder> {
     }
 
     class mViewHolder extends RecyclerView.ViewHolder {
-        TextView title_doc,comment_num_doc,source_doc;
-        TextView title_slides,comment_num_slides,source_slides;
-        TextView title_phvideo,comment_num_phvideo,source_phvideo;
+        TextView title_doc, comment_num_doc, source_doc;
+        TextView title_slides, comment_num_slides, source_slides;
+        TextView title_phvideo, comment_num_phvideo, source_phvideo;
         TextView add_more_text;
-        ImageView img_doc,img_del_doc;
-        ImageView img_slides1,img_slides2,img_slides3,img_del_slides;
-        ImageView img_phvideo,img_del_phvideo;
+        ImageView img_doc, img_del_doc;
+        ImageView img_slides1, img_slides2, img_slides3, img_del_slides;
+        ImageView img_phvideo, img_del_phvideo;
         ProgressBar mProgressBar;
         int viewType;
-        public mViewHolder(View itemView,int viewType) {
+
+        public mViewHolder(View itemView, int viewType) {
             super(itemView);
 
             this.viewType = viewType;
-            title_doc = (TextView)itemView.findViewById(R.id.item_title_doc);
-            img_doc = (ImageView)itemView.findViewById(R.id.item_img_doc);
+            title_doc = (TextView) itemView.findViewById(R.id.item_title_doc);
+            img_doc = (ImageView) itemView.findViewById(R.id.item_img_doc);
             source_doc = (TextView) itemView.findViewById(R.id.item_source_doc);
             comment_num_doc = (TextView) itemView.findViewById(R.id.item_comment_doc);
             mProgressBar = (ProgressBar) itemView.findViewById(R.id.pb_loading);
@@ -223,36 +229,34 @@ public class recycler extends RecyclerView.Adapter<recycler.mViewHolder> {
             title_slides = (TextView) itemView.findViewById(R.id.item_title_slides);
             source_slides = (TextView) itemView.findViewById(R.id.item_source_slides);
             comment_num_slides = (TextView) itemView.findViewById(R.id.item_comment_slides);
-            img_slides1 = (ImageView)itemView.findViewById(R.id.item_img_slides1);
-            img_slides2 = (ImageView)itemView.findViewById(R.id.item_img_slides2);
-            img_slides3 = (ImageView)itemView.findViewById(R.id.item_img_slides3);
-            img_del_slides = (ImageView)itemView.findViewById(R.id.item_del_slides);
-            title_phvideo = (TextView)itemView.findViewById(R.id.item_title_phvideo);
-            source_phvideo = (TextView)itemView.findViewById(R.id.item_source_phvideo);
-            comment_num_phvideo = (TextView)itemView.findViewById(R.id.item_comment_phvideo);
-            img_phvideo = (ImageView)itemView.findViewById(R.id.item_img_phvideo);
-            img_del_phvideo = (ImageView)itemView.findViewById(R.id.item_del_phvideo);
+            img_slides1 = (ImageView) itemView.findViewById(R.id.item_img_slides1);
+            img_slides2 = (ImageView) itemView.findViewById(R.id.item_img_slides2);
+            img_slides3 = (ImageView) itemView.findViewById(R.id.item_img_slides3);
+            img_del_slides = (ImageView) itemView.findViewById(R.id.item_del_slides);
+            title_phvideo = (TextView) itemView.findViewById(R.id.item_title_phvideo);
+            source_phvideo = (TextView) itemView.findViewById(R.id.item_source_phvideo);
+            comment_num_phvideo = (TextView) itemView.findViewById(R.id.item_comment_phvideo);
+            img_phvideo = (ImageView) itemView.findViewById(R.id.item_img_phvideo);
+            img_del_phvideo = (ImageView) itemView.findViewById(R.id.item_del_phvideo);
 
         }
     }
 
-    private void setIsRead(Item item,TextView textView){
-        if(item.getIsRead() == 1){
+    private void setIsRead(Item item, TextView textView) {
+        if (item.getIsRead() == 1) {
             textView.setTextColor(Color.parseColor("#BFBFBF"));
-        }
-        else {
+        } else {
             textView.setTextColor(Color.parseColor("#000000"));
         }
     }
 
-    private void initPopupWindow(View view , int position) {
-        if(popupWindow == null){
-            View popupView = LayoutInflater.from(mContext).inflate(R.layout.remove_pop,null);
-            // 三部曲第二  构造函数关联
-            popupWindow = new PopupWindow(popupView, ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT,true);
-            initClick(popupView , position);
+    private void initPopupWindow(View view, int position) {
+        View popupView = LayoutInflater.from(mContext).inflate(R.layout.remove_pop, null);
+        // 三部曲第二  构造函数关联
+        popupWindow = new PopupWindow(popupView, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, true);
+        initClick(popupView, position);
+        Toast.makeText(mContext, "删除第" + (position + 1) + "条", Toast.LENGTH_SHORT).show();
 
-        }
         // =======  两者结合才能让popup点击外部消失
         popupWindow.setOutsideTouchable(true);
         popupWindow.setBackgroundDrawable(new BitmapDrawable());
@@ -263,20 +267,22 @@ public class recycler extends RecyclerView.Adapter<recycler.mViewHolder> {
         popupWindow.setAnimationStyle(android.R.style.Animation_InputMethod);
         // popup和软键盘的关系
         // 三部曲第三   展示popup
-        popupWindow.showAsDropDown(view,-280,-170);
-
+        popupWindow.showAsDropDown(view, -280, -170);
     }
 
-    private void initClick(View popupView ,final int position){
-        Button button = (Button)popupView.findViewById(R.id.btn_popup);
+    private void initClick(View popupView, final int position) {
+        Button button = (Button) popupView.findViewById(R.id.btn_popup);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(list.size() >= 2) {
+                if (list.size() >= 2) {
                     list.remove(position);
                     notifyItemRemoved(position);
+                    if (position != list.size()) {
+                        notifyItemRangeChanged(position, list.size() - position);
+                    }
                 }
-                Toast.makeText(mContext,"删除此条",Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext, "删除第" + (position + 1) + "条", Toast.LENGTH_SHORT).show();
                 popupWindow.dismiss();
             }
         });
